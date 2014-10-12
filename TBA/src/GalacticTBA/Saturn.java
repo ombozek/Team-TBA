@@ -1,6 +1,6 @@
 package GalacticTBA;
-import java.awt.*;
-import java.applet.*;
+import java.awt.Color;
+import java.awt.Graphics;
 
 public class Saturn extends HeavenlyBody {
 

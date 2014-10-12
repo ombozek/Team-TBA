@@ -1,9 +1,13 @@
 package GalacticTBA;
 // Animated solar system
 
-import java.awt.*;
-import java.applet.*;
+import java.applet.Applet;
+import java.awt.Button;
+import java.awt.Color;
+import java.awt.Event;
+import java.awt.Graphics;
 
+@SuppressWarnings("serial")
 public class SolarSystem extends Applet {
     int sleepTime = 100,
         pauseTime = 2000,

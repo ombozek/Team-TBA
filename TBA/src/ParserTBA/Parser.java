@@ -38,7 +38,8 @@ public class Parser {
 	// Clazz is because clazz is a java keyword
 	public Clazz parseClass(File file) throws Exception {
 		Clazz clazz = new Clazz();
-		clazz.className = file.getName().substring(0, file.getName().indexOf("."));
+		clazz.className = file.getName().substring(0,
+				file.getName().indexOf("."));
 		currentClazz = clazz;
 
 		// Spin up readers
@@ -68,6 +69,7 @@ public class Parser {
 			}
 		}
 
+		// Do some cleanup, close readers and such
 		buff.close();
 		reader.close();
 		currentClazz = null;
@@ -78,18 +80,22 @@ public class Parser {
 		Methodz method = new Methodz();
 		String[] tokens = currLine;
 		String line;
-		int curlyCounter = 1;
 
+		// Extract method name
 		method.methodName = tokens[param].substring(0,
 				tokens[param].indexOf("("));
 
 		// TODO: find method parameters
+		method.parameters = methodSignature(tokens, param);
 
+		int curlyCounter = 1;
 		while ((line = buff.readLine()) != null) {
 			tokens = line.trim().split(" ");
+			if (tokens.length == 0)
+				continue;
 			method.sloc++;
 
-			// Track curly braces
+			// Track curly braces to find end of method
 			for (String token : tokens) {
 				if (token.contains("{"))
 					curlyCounter++;
@@ -97,6 +103,8 @@ public class Parser {
 					curlyCounter--;
 			}
 
+			// If we close all of our curly braces, we've reached the end of our
+			// method
 			if (curlyCounter == 0)
 				break;
 		}
@@ -135,7 +143,7 @@ public class Parser {
 
 		// Used for identifying Strings
 		case "String":
-			table.increment("String");
+			table.increment("string");
 			break;
 
 		// Used for identifying sets and lists
@@ -162,9 +170,49 @@ public class Parser {
 		} else if (line[index + 1].contains("(")) {
 			parseMethod(line, index + 1);
 		}
+		// Check if it's a class declaration
+		else if (line[index].equals("class")) {
+			classDeclaration(line, index);
+		}
 		// Otherwise continue counting types if relevant
 		else {
 			typeCount(line, index, table);
 		}
+	}
+
+	private void classDeclaration(String[] tokens, int index) {
+		// looks for a superclass by searching for "extends" in the 4th element
+		// in the class declaration
+		// public class <classname> extends <superclass>
+		if (tokens[index + 2].equals("extends")) {
+			currentClazz.superclass = tokens[index + 3];
+		}
+	}
+
+	private int methodSignature(String[] tokens, int params) throws Exception {
+		int paramCount = 0;
+		for (int index = params; index < tokens.length; index++) {
+			// Get rid of unnecessary tokens
+			if (tokens[index].contains(",") || tokens[index].contains("<")) {
+				continue;
+			}
+			// If we close the parameter section, we're done
+			else if (tokens[index].contains(")")) {
+				return paramCount;
+			}
+			// count the parameters in the method signature
+			else {
+				paramCount++;
+			}
+		}
+
+		// If our params take over one line, call self recursively
+		String line = null;
+		while (line == null) {
+			line = buff.readLine();
+		}
+
+		return methodSignature(line.trim().split(" "), 0) + paramCount;
+
 	}
 }

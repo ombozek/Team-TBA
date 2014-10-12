@@ -6,7 +6,7 @@ import java.util.Hashtable;
 public class Codebase {
 
 	public int files;
-	public static final String[] vars = { "int", "String", "char", "double",
+	public static final String[] vars = { "int", "string", "char", "double",
 			"boolean", "list", "set", "array" };
 	ArrayList<Clazz> classes;
 
