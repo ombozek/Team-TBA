@@ -57,12 +57,6 @@ public class Parser {
 			case "import":
 				currentClazz.numImports++;
 				break;
-			case "extends":
-				// TODO: get superclass out of there
-				break;
-			case "implements":
-				// TODO: get interfaces out of there
-				break;
 			default:
 				typeCount(tokens, 0, currentClazz.varTable);
 				break;
@@ -125,25 +119,31 @@ public class Parser {
 
 		// This can only be a variable
 		case "final":
-			if (line.length < index)
+			if (line.length > index)
 				typeCount(line, index + 1, table);
 			break;
 
 		// Used for identifying booleans
 		case "boolean":
 		case "Boolean":
-			table.increment("boolean");
+			table.increment("boolean", commaCounter(line, index));
 			break;
 
 		// Used for identifying ints
 		case "int":
 		case "Integer":
-			table.increment("int");
+			table.increment("int", commaCounter(line, index));
+			break;
+
+		// Used for identifying doubles
+		case "double":
+		case "Double":
+			table.increment("double", commaCounter(line, index));
 			break;
 
 		// Used for identifying Strings
 		case "String":
-			table.increment("string");
+			table.increment("string", commaCounter(line, index));
 			break;
 
 		// Used for identifying sets and lists
@@ -213,6 +213,28 @@ public class Parser {
 		}
 
 		return methodSignature(line.trim().split(" "), 0) + paramCount;
+	}
 
+	public int commaCounter(String[] tokens, int params) throws Exception {
+		int commaCount = 1;
+		for (int index = params; index < tokens.length; index++) {
+			// Get rid of unnecessary tokens
+			if (tokens[index].contains(",")) {
+				commaCount++;
+				continue;
+			}
+			// If we close the parameter section, we're done
+			else if (tokens[index].contains(";")) {
+				return commaCount;
+			}
+		}
+
+		// If our params take over one line, call self recursively
+		String line = null;
+		while (line == null) {
+			line = buff.readLine();
+		}
+
+		return commaCounter(line.trim().split(" "), 0) + commaCount - 1;
 	}
 }

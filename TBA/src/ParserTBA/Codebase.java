@@ -13,17 +13,17 @@ public class Codebase {
 	public Codebase(ArrayList<Clazz> classes) {
 		this.classes = classes;
 	}
-	
+
 	@Override
-	public String toString(){
+	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("[Codebase: ");
 		for (Clazz clazz : classes) {
 			builder.append(clazz.toString());
 		}
-		
+
 		builder.append("]");
-		
+
 		return builder.toString();
 	}
 
@@ -46,11 +46,11 @@ public class Codebase {
 			builder.append(", Imports: " + numImports);
 			builder.append(", Variables: " + varTable.toString());
 			builder.append(", Methods: [");
-			
+
 			for (Methodz method : methods) {
 				builder.append(method.toString() + ", ");
 			}
-			
+
 			return builder.toString().substring(0, builder.length() - 2) + "]]";
 		}
 
@@ -79,7 +79,11 @@ public class Codebase {
 		}
 
 		public void increment(String var) {
-			varTable.put(var, varTable.get(var) + 1);
+			increment(var, 1);
+		}
+
+		public void increment(String var, int times) {
+			varTable.put(var, varTable.get(var) + times);
 		}
 
 		public Hashtable<String, Integer> getTable() {
@@ -89,12 +93,12 @@ public class Codebase {
 		@Override
 		public String toString() {
 			StringBuilder builder = new StringBuilder();
-			
+
 			builder.append("[");
 			for (String var : vars) {
 				builder.append(var + ": " + varTable.get(var) + ", ");
 			}
-			
+
 			return builder.toString().substring(0, builder.length() - 2) + "]";
 		}
 	}
