@@ -26,5 +26,17 @@ local.properties
 .recommenders/*
 TBA/bin/**
 
+# intelij
+.idea/
+*.iml
+*.iws
+
+# Mac
+.DS_Store
+
+# Maven
+log/
+target/
+
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
