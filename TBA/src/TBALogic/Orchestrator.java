@@ -13,6 +13,7 @@ public class Orchestrator {
 		ArrayList<String> sourceFiles;
 		sourceFiles = new TBALogic().generateFileList();
 		Codebase codebase = new Parser(sourceFiles).parse();
+		System.out.println(codebase.toString());
 
 		System.exit(0);
 	}
