@@ -1,13 +1,17 @@
 package ParserTBA;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 
 public class Codebase {
 
 	public int files;
 	public static final String[] vars = { "int", "string", "char", "double",
 			"boolean", "list", "set", "array" };
+
+	public enum types {
+		INT, STRING, CHAR, DOUBLE, BOOLEAN, LIST, SET, ARRAY
+	}
+
 	ArrayList<Clazz> classes;
 
 	public Codebase(ArrayList<Clazz> classes) {
@@ -70,23 +74,21 @@ public class Codebase {
 
 	static class VarTable {
 
-		Hashtable<String, Integer> varTable = new Hashtable<String, Integer>(
-				vars.length);
+		int[] varTable;
 
 		public VarTable() {
-			for (String var : vars)
-				varTable.put(var, 0);
+			varTable = new int[types.values().length];
 		}
 
-		public void increment(String var) {
-			increment(var, 1);
+		public void increment(Enum<types> type) {
+			increment(type, 1);
 		}
 
-		public void increment(String var, int times) {
-			varTable.put(var, varTable.get(var) + times);
+		public void increment(Enum<types> type, int times) {
+			varTable[type.ordinal()] += times;
 		}
 
-		public Hashtable<String, Integer> getTable() {
+		public int[] getTable() {
 			return varTable;
 		}
 
@@ -95,8 +97,9 @@ public class Codebase {
 			StringBuilder builder = new StringBuilder();
 
 			builder.append("[");
-			for (String var : vars) {
-				builder.append(var + ": " + varTable.get(var) + ", ");
+			for (Enum<types> type : types.values()) {
+				builder.append(type.name().toLowerCase() + ": "
+						+ varTable[type.ordinal()] + ", ");
 			}
 
 			return builder.toString().substring(0, builder.length() - 2) + "]";

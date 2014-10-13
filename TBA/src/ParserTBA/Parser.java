@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import ParserTBA.Codebase.Clazz;
 import ParserTBA.Codebase.Methodz;
 import ParserTBA.Codebase.VarTable;
+import ParserTBA.Codebase.types;
 
 public class Parser {
 
@@ -79,7 +80,7 @@ public class Parser {
 		method.methodName = tokens[param].substring(0,
 				tokens[param].indexOf("("));
 
-		// TODO: find method parameters
+		// Extract method parameters
 		method.parameters = methodSignature(tokens, param);
 
 		int curlyCounter = 1;
@@ -126,33 +127,33 @@ public class Parser {
 		// Used for identifying booleans
 		case "boolean":
 		case "Boolean":
-			table.increment("boolean", commaCounter(line, index));
+			table.increment(types.BOOLEAN, commaCounter(line, index));
 			break;
 
 		// Used for identifying ints
 		case "int":
 		case "Integer":
-			table.increment("int", commaCounter(line, index));
+			table.increment(types.INT, commaCounter(line, index));
 			break;
 
 		// Used for identifying doubles
 		case "double":
 		case "Double":
-			table.increment("double", commaCounter(line, index));
+			table.increment(types.DOUBLE, commaCounter(line, index));
 			break;
 
 		// Used for identifying Strings
 		case "String":
-			table.increment("string", commaCounter(line, index));
+			table.increment(types.STRING, commaCounter(line, index));
 			break;
 
 		// Used for identifying sets and lists
 		default:
 			if (line[index].contains("list") || line[index].contains("List")) {
-				table.increment("list");
+				table.increment(types.LIST);
 			} else if (line[index].contains("set")
 					|| line[index].contains("Set")) {
-				table.increment("set");
+				table.increment(types.SET);
 			}
 		}
 	}
@@ -169,6 +170,8 @@ public class Parser {
 			parseMethod(line, index);
 		} else if (line[index + 1].contains("(")) {
 			parseMethod(line, index + 1);
+		} else if (line.length < index + 2 && line[index + 2].contains("(")) {
+			parseMethod(line, index + 2);
 		}
 		// Check if it's a class declaration
 		else if (line[index].equals("class")) {
