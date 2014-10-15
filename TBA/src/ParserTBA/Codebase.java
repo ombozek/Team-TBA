@@ -24,11 +24,9 @@ public class Codebase {
 		builder.append("[Codebase: ");
 		for (Clazz clazz : classes) {
 			builder.append(clazz.toString());
+			builder.append(", ");
 		}
-
-		builder.append("]");
-
-		return builder.toString();
+		return builder.toString().substring(0, builder.length() - 2) + "]";
 	}
 
 	static class Clazz {
