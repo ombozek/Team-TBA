@@ -29,7 +29,7 @@ public class Codebase {
 		return builder.toString().substring(0, builder.length() - 2) + "]";
 	}
 
-	static class Clazz {
+	public static class Clazz {
 		int numImports;
 		String superclass;
 		ArrayList<Methodz> methods = new ArrayList<Methodz>();
@@ -58,7 +58,7 @@ public class Codebase {
 
 	}
 
-	static class Methodz {
+	public static class Methodz {
 		int sloc = 0;
 		int parameters = 0;
 		String methodName = "";
@@ -70,7 +70,7 @@ public class Codebase {
 		}
 	}
 
-	static class VarTable {
+	public static class VarTable {
 
 		int[] varTable;
 

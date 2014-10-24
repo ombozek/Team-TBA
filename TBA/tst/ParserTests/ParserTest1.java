@@ -1,43 +1,52 @@
 package ParserTests;
 
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+import static org.junit.Assert.assertEquals;
+import ParserTBA.Codebase.Clazz;
+import ParserTBA.Parser;
+
 public class ParserTest1 {
 	//J-Unit format, will change to mock objects
 	
-	Parser parser = new Parser();
+	Parser parser;
+	
+	@BeforeClass
+	public void setUp(){
+		parser = new Parser(null /*TODO make args*/);
+	}
 	
 	@Test
 	public void testparseClass() {
-		private Clazz result = parser.parseClass(SampleFile.java);
+		Clazz result = parser.parseClass(SampleFile.java);
 		assertEquals("", result);
 	}
 
 	@Test
 	public void testparseMethod() {
-	
-		private /*type*/ result = parser.parseMethod(currLine, param);
+		/*type*/ result = parser.parseMethod(currLine, param);
 		assertEquals("", result); 
 
 	}
 
 	@Test
 	public void testtypeCount() {
-
-		private /*type*/ result = parser.typeCount(line, index, table);
+		/*type*/ result = parser.typeCount(line, index, table);
 		assertEquals("", result);
 
 	}
 	
 	@Test
 	public void testmethodOrVar() {
-		
-		private /*type*/ result = parser.methodOrVar(line, index, table);
+		/*type*/ result = parser.methodOrVar(line, index, table);
 		assertEquals("", result);
 	}
 
 	@Test
 	public void testclassDeclaration() {
-
-		private /*type*/ result = parser.classDeclaration(tokens, index);
+		/*type*/ result = parser.classDeclaration(tokens, index);
 		assertEquals("", result);
 
 	}
@@ -45,13 +54,13 @@ public class ParserTest1 {
 	@Test 
 	public void testmethodSignature() {
 
-		private int result = parser.methodSignature(tokens, params);
+		int result = parser.methodSignature(tokens, params);
 		assertEquals("", result);
 	}
 
 	@Test 
 	public void testcommaCounter() {
 
-		private int result = parser.commaCounter(tokens, params);
+		int result = parser.commaCounter(tokens, params);
 		assertEquals("", result);
 	}
