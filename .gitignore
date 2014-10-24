@@ -6,10 +6,12 @@
 # Package Files #
 *.war
 *.ear
+*.jar  # replaced to avoid accidental jar binary additions
 
 # eclipse specific git ignore
 *.pydevproject
 .project
+.classpath # replaced to avoid more build path changes
 .metadata
 bin/**
 tmp/**
