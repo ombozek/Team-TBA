@@ -14,53 +14,74 @@ public class ParserTest1 {
 	Parser parser;
 	
 	@BeforeClass
-	public void setUp(){
+	public static void setUp() {
+		private ArrayList<String> TestFiles;
 		parser = new Parser(null /*TODO make args*/);
+	}
+	// Are exception tests necessary? eg.
+	@Test (expected = Exception.class)
+	public void testExceptionIsThrown() {
+		parser.parseClass(NoFile.java);
+	}
+	
+	@Test (expected = Exception.class)
+	public void testcountExceptionIsThrown() {
+		parser.typeCount(line, index, table);
 	}
 	
 	@Test
 	public void testparseClass() {
-		Clazz result = parser.parseClass(SampleFile.java);
-		assertEquals("", result);
+		
+		BufferedReader mockReader = Mockito.mock(BufferedReader.class);
+		parser.setBufferedReaderForTestOnly(mockReader);
+		Mockito.when(mockReader.nextLine).thenReturn("TEXT TO BE PARSED");
+		
+		// Clazz mockClazz = Mockito.mock(Clazz.class);
+		
+		// Clazz result = parser.parseClass(SampleFile.java);
+		// assertEquals("", result);
 	}
 
 	@Test
 	public void testparseMethod() {
-		/*type*/ result = parser.parseMethod(currLine, param);
-		assertEquals("", result); 
+		ArrayList mockList = Mockito.mock(ArrayList.class);
+		
+		// result = parser.parseMethod(currLine, param);
+		// assertEquals("", result); 
 
 	}
 
 	@Test
 	public void testtypeCount() {
-		/*type*/ result = parser.typeCount(line, index, table);
+		result = parser.typeCount(line, index, table);
 		assertEquals("", result);
 
 	}
 	
 	@Test
 	public void testmethodOrVar() {
-		/*type*/ result = parser.methodOrVar(line, index, table);
+		result = parser.methodOrVar(line, index, table);
 		assertEquals("", result);
 	}
 
 	@Test
 	public void testclassDeclaration() {
-		/*type*/ result = parser.classDeclaration(tokens, index);
+		result = parser.classDeclaration(tokens, index);
 		assertEquals("", result);
 
 	}
 
 	@Test 
-	public void testmethodSignature() {
+	public int testmethodSignature() {
 
 		int result = parser.methodSignature(tokens, params);
 		assertEquals("", result);
 	}
 
 	@Test 
-	public void testcommaCounter() {
+	public int testcommaCounter() {
 
 		int result = parser.commaCounter(tokens, params);
 		assertEquals("", result);
 	}
+}

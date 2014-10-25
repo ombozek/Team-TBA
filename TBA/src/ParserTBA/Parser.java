@@ -12,10 +12,10 @@ import ParserTBA.Codebase.types;
 
 public class Parser {
 
-	public ArrayList<String> files;
-	public FileReader reader;
-	public BufferedReader buff;
-	public Clazz currentClazz;
+	private ArrayList<String> files;
+	private FileReader reader;
+	private BufferedReader buff;
+	private Clazz currentClazz;
 
 	public Parser(ArrayList<String> files) {
 		this.files = files;
@@ -240,4 +240,15 @@ public class Parser {
 
 		return commaCounter(line.trim().split(" "), 0) + commaCount - 1;
 	}
+
+	// TEST METHODS ONLY
+	
+	public void setBufferedReaderForTestOnly(reader);
+	
+	public BufferedReader getBufferedReaderForTestOnly();
+	
+	public Clazz getCurrentClazzForTestOnly();
+	
+	public void 
+	
 }
