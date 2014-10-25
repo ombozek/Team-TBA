@@ -249,6 +249,4 @@ public class Parser {
 	
 	public Clazz getCurrentClazzForTestOnly();
 	
-	public void 
-	
 }
