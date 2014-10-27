@@ -2,7 +2,6 @@ package ParserTests;
 
 import java.io.BufferedReader;
 import java.util.ArrayList;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
