@@ -2,12 +2,15 @@ package ParserTests;
 
 import java.io.BufferedReader;
 import java.util.ArrayList;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
 import ParserTBA.Codebase.Clazz;
+import ParserTBA.Codebase.VarTable;
+import ParserTBA.Codebase.types;
 import ParserTBA.Parser;
 
 public class ParserTest1 {
@@ -17,10 +20,6 @@ public class ParserTest1 {
 		
 		// Create mock object of BufferedReader
 		BufferedReader reader = Mockito.mock(BufferedReader.class);
-		
-		ArrayList<String> files = new ArrayList<String>();
-		Parser parser = new Parser(files);
-		Clazz clazz = new Clazz();
 		
 	}
 	
@@ -40,16 +39,32 @@ public class ParserTest1 {
 	}
 
 	@Test
-	public void testparseMethod() {	
+	public void testparseMethod() throws Exception {	
 		
 		// TODO: TEST
+		ArrayList<String> files = new ArrayList<String>();
+		Parser parser = new Parser(files);
+		Clazz clazz = new Clazz();
+		String[] currLine = {"("};
+		parser.setCurrentClassForTestOnly(clazz);
+		parser.parseMethod(currLine, 0);
 		
+		// assertEquals();
 	}
 
 	@Test
-	public void testtypeCount() {
+	public void testtypeCount() throws Exception {
 		
 		// TODO: TEST
+		ArrayList<String> files = new ArrayList<String>();
+		Parser parser = new Parser(files);
+		Clazz clazz = new Clazz();
+		VarTable vTable = new VarTable();
+		String[] line = {"boolean"};
+		parser.setCurrentClassForTestOnly(clazz);
+		parser.typeCount(line, 0, vTable);
+		
+		assertEquals(1, vTable.getTable()[types.BOOLEAN.ordinal()]);
 	}
 	
 	@Test
