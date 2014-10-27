@@ -22,6 +22,8 @@ public class Planet {
 		this.setPosz(z);
 		this.radius = radius;
 		
+		//TODO: Transform position of sphere before creation
+		
 		//Create Sphere Object
 		this.sphere = new Sphere(radius);
 		

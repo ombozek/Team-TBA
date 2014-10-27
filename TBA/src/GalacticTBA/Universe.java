@@ -14,7 +14,7 @@ public class Universe {
 	   SimpleUniverse universe = new SimpleUniverse();
 
 	   BranchGroup group = new BranchGroup();
-	   Planet p = new Planet();
+	   //Planet p = new Planet(group,0,0,0,1.0,getColor(blue));
 
 	   Color3f light1Color = new Color3f(1.8f,0.1f,0.1f);
 	   BoundingSphere bounds = new BoundingSphere(new Point3d(0.0,0.0,0.0), 100.0);
