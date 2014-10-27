@@ -1,25 +1,37 @@
 package GalacticTBA;
-import com.sun.j3d.utils.universe.SimpleUniverse;
 import com.sun.j3d.utils.geometry.*;
-import com.sun.j3d.utils.universe.*;
-import javax.media.j3d.*;
 import javax.vecmath.*;
+import javax.media.j3d.Appearance;
 import javax.media.j3d.BranchGroup;
+import javax.media.j3d.ColoringAttributes;
 public class Planet {
-	
+	Sphere sphere;
+	Appearance ap = new Appearance();
+	ColoringAttributes ca;
 	Color3f color;
 	int posx,posy,posz;
 	float radius;
 	public Planet(){
-		//Empty Contructor
+		//Empty Constructor
 	}
 	public Planet(BranchGroup g,int x, int y, int z, float radius, Color3f color){
+		//Set Properties of sphere
 		this.setColor(color);
 		this.setPosx(x);
 		this.setPosy(y);
 		this.setPosz(z);
 		this.radius = radius;
-		g.addChild(new Sphere(radius));
+		
+		//Create Sphere Object
+		this.sphere = new Sphere(radius);
+		
+		//Apply Coloring Attributes
+		this.ca = new ColoringAttributes(color,ColoringAttributes.NICEST);
+		this.ap.setColoringAttributes(ca);
+		this.sphere.setAppearance(ap);
+		
+		//Add Sphere to group
+		g.addChild(this.sphere);
 	}
 	private void setColor(Color3f c) {
 		this.color=c;
