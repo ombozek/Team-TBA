@@ -3,7 +3,7 @@ package ParserTests;
 import java.io.BufferedReader;
 import java.util.ArrayList;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -15,83 +15,85 @@ import ParserTBA.Parser;
 
 public class ParserTest1 {
 	
-	@BeforeClass
-	public static void setUp() {
-		
-		// Create mock object of BufferedReader
-		BufferedReader reader = Mockito.mock(BufferedReader.class);
-		
-	}
+	ArrayList<String> files;
+	Parser parser;
+	BufferedReader mockReader;
+	Clazz clazz;
+	VarTable vTable;
 	
-	@Test
-	public void testparse() {
+	@Before
+	public void setUp() {
 		
-		// ArrayList<Clazz> testClasses = parser.parse();
-		// TODO: TEST
-		
-	}
-	
-	@Test
-	public void testparseClass() {
-		
-		// TODO: TEST
+		files = new ArrayList<String>();
+		parser = new Parser(files);
+		mockReader = Mockito.mock(BufferedReader.class);
+		clazz = new Clazz();
+		vTable = new VarTable();
 		
 	}
 
 	@Test
-	public void testparseMethod() throws Exception {	
-		
+	public void testparse() {
+
+		// ArrayList<Clazz> testClasses = parser.parse();
 		// TODO: TEST
-		ArrayList<String> files = new ArrayList<String>();
-		Parser parser = new Parser(files);
-		Clazz clazz = new Clazz();
-		String[] currLine = {"("};
+
+	}
+
+	@Test
+	public void testparseClass() {
+
+		// TODO: TEST
+
+	}
+
+	@Test
+	public void testparseMethod() throws Exception {
+
+		// TODO: TEST
+		String[] currLine = { "(" };
 		parser.setCurrentClassForTestOnly(clazz);
 		parser.parseMethod(currLine, 0);
-		
+
 		// assertEquals();
 	}
 
 	@Test
 	public void testtypeCount() throws Exception {
-		
-		// TODO: TEST
-		ArrayList<String> files = new ArrayList<String>();
-		Parser parser = new Parser(files);
-		Clazz clazz = new Clazz();
-		VarTable vTable = new VarTable();
-		String[] line = {"boolean"};
+
+		String[] line = {"public", "boolean", "hello,", "swag;"};
 		parser.setCurrentClassForTestOnly(clazz);
+		parser.setBufferedReaderForTestOnly(mockReader);
 		parser.typeCount(line, 0, vTable);
-		
-		assertEquals(1, vTable.getTable()[types.BOOLEAN.ordinal()]);
+
+		assertEquals(2, vTable.getTable()[types.BOOLEAN.ordinal()]);
 	}
-	
+
 	@Test
 	public void testmethodOrVar() {
-		
+
 		// TODO: TEST
-		
+
 	}
 
 	@Test
 	public void testclassDeclaration() {
-		
+
 		// TODO: TEST
-		
+
 	}
 
-	@Test 
+	@Test
 	public void testmethodSignature() {
 
 		// TODO: TEST
-		
+
 	}
 
-	@Test 
+	@Test
 	public void testcommaCounter() {
 
 		// TODO: TEST
-		
+
 	}
 }
