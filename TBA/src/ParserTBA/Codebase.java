@@ -59,9 +59,9 @@ public class Codebase {
 	}
 
 	public static class Methodz {
-		int sloc = 0;
-		int parameters = 0;
-		String methodName = "";
+		public int sloc = 0;
+		public int parameters = 0;
+		public String methodName = "";
 
 		@Override
 		public String toString() {

@@ -9,6 +9,7 @@ import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
 import ParserTBA.Codebase.Clazz;
+import ParserTBA.Codebase.Methodz;
 import ParserTBA.Codebase.VarTable;
 import ParserTBA.Codebase.types;
 import ParserTBA.Parser;
@@ -20,6 +21,7 @@ public class ParserTest1 {
 	BufferedReader mockReader;
 	Clazz clazz;
 	VarTable vTable;
+	Methodz method;
 	
 	@Before
 	public void setUp() {
@@ -29,6 +31,7 @@ public class ParserTest1 {
 		mockReader = Mockito.mock(BufferedReader.class);
 		clazz = new Clazz();
 		vTable = new VarTable();
+		method = new Methodz();
 		
 	}
 
@@ -50,12 +53,15 @@ public class ParserTest1 {
 	@Test
 	public void testparseMethod() throws Exception {
 
-		// TODO: TEST
-		String[] currLine = { "(" };
+		String[] currLine = {"testMethod(){}"};
 		parser.setCurrentClassForTestOnly(clazz);
+		parser.getCurrentClassForTestOnly();
+		parser.setBufferedReaderForTestOnly(mockReader);
+		parser.getBufferedReaderForTestOnly();
 		parser.parseMethod(currLine, 0);
-
-		// assertEquals();
+		
+		assertEquals("[MethodName: " + method.methodName + ", parameters: " + method.parameters
+				+ ", SLOC: " + method.sloc + "]", method.toString());
 	}
 
 	@Test
