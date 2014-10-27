@@ -108,7 +108,7 @@ public class Parser {
 		return;
 	}
 
-	private void typeCount(String[] line, int index, VarTable table)
+	public void typeCount(String[] line, int index, VarTable table)
 			throws Exception {
 		switch (line[index]) {
 		// These are either methods or variables
@@ -158,7 +158,7 @@ public class Parser {
 		}
 	}
 
-	private void methodOrVar(String[] line, int index, VarTable table)
+	public void methodOrVar(String[] line, int index, VarTable table)
 			throws Exception {
 		// Ensure we won't overflow
 		if (line.length < index) {
@@ -183,7 +183,7 @@ public class Parser {
 		}
 	}
 
-	private void classDeclaration(String[] tokens, int index) {
+	public void classDeclaration(String[] tokens, int index) {
 		// looks for a superclass by searching for "extends" in the 4th element
 		// in the class declaration
 		// public class <classname> extends <superclass>
@@ -192,7 +192,7 @@ public class Parser {
 		}
 	}
 
-	private int methodSignature(String[] tokens, int params) throws Exception {
+	public int methodSignature(String[] tokens, int params) throws Exception {
 		int paramCount = 0;
 		for (int index = params; index < tokens.length; index++) {
 			// Get rid of unnecessary tokens
