@@ -1,5 +1,8 @@
 package ParserTests;
 
+import java.io.BufferedReader;
+import java.util.ArrayList;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -10,96 +13,70 @@ import ParserTBA.Parser;
 
 public class ParserTest1 {
 	
-	private static Parser mockedParser;
-	private static BufferedReader mockedReader;
-	private static Codebase codebase1;
-	
 	@BeforeClass
 	public static void setUp() {
-		// Create mock object of Parser
-		mockedParser = new Parser(null /*TODO make args*/);
 		
 		// Create mock object of BufferedReader
-		mockedReader = Mockito.mock(BufferedReader.class);
-		mockedParser.setBufferedReaderForTestOnly(mockedReader);
+		BufferedReader reader = Mockito.mock(BufferedReader.class);
 		
-		// Instance of Codebase class
-		codebase1 = new Codebase(classes);
+		ArrayList<String> files = new ArrayList<String>();
+		Parser parser = new Parser(files);
+		Clazz clazz = new Clazz();
 		
-		// Clazz mockClazz = Mockito.mock(Clazz.class);
-		// ArrayList mockList = Mockito.mock(ArrayList.class);
-		
-		// Stubbing methods of mocked parser ???
-		when(mockedParser.parse(/*args*/)).thenReturn(codebase1);
-		when(mockedParser.parseClass(/*args*/)).thenReturn(clazz);
-		when(mockedParser.parseMethod(/*args*/)).thenReturn();
-		when(mockedParser.typeCount(/*args*/)).thenReturn();
 	}
 	
 	@Test
 	public void testparse() {
 		
-		ArrayList<Clazz> testClasses = mockedParser.parse();
+		ArrayList<Clazz> testClasses = parser.parse();
+		
 	}
 	
 	@Test
 	public void testparseClass() {
 		
-		when(mockedParser.getCurrentClazzForTestOnly()).thenReturn();
-		// Clazz result = parser.parseClass(SampleFile.java);
-		// assertEquals("", result);
+		// TODO: TEST
+		
 	}
 
 	@Test
 	public void testparseMethod() {	
 		
-		// result = parser.parseMethod(currLine, param);
-		// assertEquals("", result); 
+		// TODO: TEST
+		
 	}
 
 	@Test
 	public void testtypeCount() {
 		
-		result = parser.typeCount(line, index, table);
-		assertEquals("", result);
+		// TODO: TEST
 	}
 	
 	@Test
 	public void testmethodOrVar() {
 		
-		result = parser.methodOrVar(line, index, table);
-		assertEquals("", result);
+		// TODO: TEST
+		
 	}
 
 	@Test
 	public void testclassDeclaration() {
 		
-		result = parser.classDeclaration(tokens, index);
-		assertEquals("", result);
+		// TODO: TEST
+		
 	}
 
 	@Test 
 	public int testmethodSignature() {
 
-		int result = parser.methodSignature(tokens, params);
-		assertEquals("", result);
+		// TODO: TEST
+		
 	}
 
 	@Test 
 	public int testcommaCounter() {
 
-		int result = parser.commaCounter(tokens, params);
-		assertEquals("", result);
-	}
-	
-	// Are exception tests necessary? eg.
-	@Test (expected = Exception.class)
-	public void testExceptionIsThrown() {
-		parser.parseClass(NoFile.java);
-	}
-	
-	@Test (expected = Exception.class)
-	public void testcountExceptionIsThrown() {
-		parser.typeCount(line, index, table);
+		// TODO: TEST
+		
 	}
 }

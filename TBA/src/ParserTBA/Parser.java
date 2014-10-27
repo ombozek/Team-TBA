@@ -243,10 +243,20 @@ public class Parser {
 
 	// TEST METHODS ONLY
 	
-	public void setBufferedReaderForTestOnly(reader);
+	public void setBufferedReaderForTestOnly(BufferedReader reader) {
+		this.buff = reader;
+	}
 	
-	public BufferedReader getBufferedReaderForTestOnly();
+	public BufferedReader getBufferedReaderForTestOnly() {
+		return this.buff;
+	}
 	
-	public Clazz getCurrentClazzForTestOnly();
+	public Clazz getCurrentClassForTestOnly() {
+		return this.currentClazz;
+	}
+	
+	public void setCurrentClassForTestOnly(Clazz clazz) {
+		this.currentClazz = clazz;
+	}
 	
 }
