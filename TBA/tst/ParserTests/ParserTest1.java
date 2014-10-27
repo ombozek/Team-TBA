@@ -27,7 +27,8 @@ public class ParserTest1 {
 	@Test
 	public void testparse() {
 		
-		ArrayList<Clazz> testClasses = parser.parse();
+		// ArrayList<Clazz> testClasses = parser.parse();
+		// TODO: TEST
 		
 	}
 	
@@ -66,14 +67,14 @@ public class ParserTest1 {
 	}
 
 	@Test 
-	public int testmethodSignature() {
+	public void testmethodSignature() {
 
 		// TODO: TEST
 		
 	}
 
 	@Test 
-	public int testcommaCounter() {
+	public void testcommaCounter() {
 
 		// TODO: TEST
 		
