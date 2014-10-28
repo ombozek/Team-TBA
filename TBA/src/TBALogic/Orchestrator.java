@@ -13,11 +13,14 @@ public class Orchestrator {
 		// Generate a list of files to parse
 		ArrayList<String> sourceFiles;
 		sourceFiles = new TBALogic().generateFileList();
+		if (sourceFiles == null) {
+			System.exit(0);
+		}
 		// Parse the files
 		Codebase codebase = new Parser(sourceFiles).parse();
 		System.out.println(codebase.toString());
 		// Send structure to output generator
-		
+
 		System.exit(0);
 	}
 }
