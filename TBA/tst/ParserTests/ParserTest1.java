@@ -1,105 +1,105 @@
 package ParserTests;
 
-import org.junit.BeforeClass;
+import java.io.BufferedReader;
+import java.util.ArrayList;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
 import ParserTBA.Codebase.Clazz;
+import ParserTBA.Codebase.Methodz;
+import ParserTBA.Codebase.VarTable;
+import ParserTBA.Codebase.types;
 import ParserTBA.Parser;
 
 public class ParserTest1 {
 	
-	private static Parser mockedParser;
-	private static BufferedReader mockedReader;
-	private static Codebase codebase1;
+	ArrayList<String> files;
+	Parser parser;
+	BufferedReader mockReader;
+	Clazz clazz;
+	VarTable vTable;
+	Methodz method;
 	
-	@BeforeClass
-	public static void setUp() {
-		// Create mock object of Parser
-		mockedParser = new Parser(null /*TODO make args*/);
+	@Before
+	public void setUp() {
 		
-		// Create mock object of BufferedReader
-		mockedReader = Mockito.mock(BufferedReader.class);
-		mockedParser.setBufferedReaderForTestOnly(mockedReader);
+		files = new ArrayList<String>();
+		parser = new Parser(files);
+		mockReader = Mockito.mock(BufferedReader.class);
+		clazz = new Clazz();
+		vTable = new VarTable();
+		method = new Methodz();
 		
-		// Instance of Codebase class
-		codebase1 = new Codebase(classes);
-		
-		// Clazz mockClazz = Mockito.mock(Clazz.class);
-		// ArrayList mockList = Mockito.mock(ArrayList.class);
-		
-		// Stubbing methods of mocked parser ???
-		when(mockedParser.parse(/*args*/)).thenReturn(codebase1);
-		when(mockedParser.parseClass(/*args*/)).thenReturn(clazz);
-		when(mockedParser.parseMethod(/*args*/)).thenReturn();
-		when(mockedParser.typeCount(/*args*/)).thenReturn();
 	}
-	
+
 	@Test
 	public void testparse() {
-		
-		ArrayList<Clazz> testClasses = mockedParser.parse();
+
+		// ArrayList<Clazz> testClasses = parser.parse();
+		// TODO: TEST
+
 	}
-	
+
 	@Test
 	public void testparseClass() {
-		
-		when(mockedParser.getCurrentClazzForTestOnly()).thenReturn();
-		// Clazz result = parser.parseClass(SampleFile.java);
-		// assertEquals("", result);
+
+		// TODO: TEST
+
 	}
 
 	@Test
-	public void testparseMethod() {	
+	public void testparseMethod() throws Exception {
+
+		String[] currLine = {"testMethod(){}"};
+		parser.setCurrentClassForTestOnly(clazz);
+		parser.getCurrentClassForTestOnly();
+		parser.setBufferedReaderForTestOnly(mockReader);
+		parser.getBufferedReaderForTestOnly();
+		parser.parseMethod(currLine, 0);
 		
-		// result = parser.parseMethod(currLine, param);
-		// assertEquals("", result); 
+		assertEquals("[MethodName: " + method.methodName + ", parameters: " + method.parameters
+				+ ", SLOC: " + method.sloc + "]", method.toString());
 	}
 
 	@Test
-	public void testtypeCount() {
-		
-		result = parser.typeCount(line, index, table);
-		assertEquals("", result);
+	public void testtypeCount() throws Exception {
+
+		String[] line = {"public", "boolean", "hello,", "swag;"};
+		parser.setCurrentClassForTestOnly(clazz);
+		parser.setBufferedReaderForTestOnly(mockReader);
+		parser.typeCount(line, 0, vTable);
+
+		assertEquals(2, vTable.getTable()[types.BOOLEAN.ordinal()]);
 	}
-	
+
 	@Test
 	public void testmethodOrVar() {
-		
-		result = parser.methodOrVar(line, index, table);
-		assertEquals("", result);
+
+		// TODO: TEST
+
 	}
 
 	@Test
 	public void testclassDeclaration() {
-		
-		result = parser.classDeclaration(tokens, index);
-		assertEquals("", result);
+
+		// TODO: TEST
+
 	}
 
-	@Test 
-	public int testmethodSignature() {
+	@Test
+	public void testmethodSignature() {
 
-		int result = parser.methodSignature(tokens, params);
-		assertEquals("", result);
+		// TODO: TEST
+
 	}
 
-	@Test 
-	public int testcommaCounter() {
+	@Test
+	public void testcommaCounter() {
 
-		int result = parser.commaCounter(tokens, params);
-		assertEquals("", result);
-	}
-	
-	// Are exception tests necessary? eg.
-	@Test (expected = Exception.class)
-	public void testExceptionIsThrown() {
-		parser.parseClass(NoFile.java);
-	}
-	
-	@Test (expected = Exception.class)
-	public void testcountExceptionIsThrown() {
-		parser.typeCount(line, index, table);
+		// TODO: TEST
+
 	}
 }
