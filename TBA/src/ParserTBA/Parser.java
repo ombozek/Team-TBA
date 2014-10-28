@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 import ParserTBA.Codebase.Clazz;
 import ParserTBA.Codebase.Methodz;
@@ -27,16 +28,19 @@ public class Parser {
 	 * @return Codebase object representing entire codebase structure
 	 */
 	public Codebase parse() {
-		ArrayList<Clazz> classes = new ArrayList<Clazz>(files.size());
-
+		Hashtable<String, Clazz> classes = new Hashtable<String, Clazz>();
 		// Parse every file
 		for (String file : files) {
 			try {
-				classes.add(parseClass(new File(file)));
+				parseClass(new File(file));
+				classes.put(currentClazz.className, currentClazz);
+				currentClazz = null;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+
+		organizeHierarchy(classes);
 
 		return new Codebase(classes);
 	}
@@ -80,7 +84,6 @@ public class Parser {
 		// Do some cleanup, close readers and such
 		buff.close();
 		reader.close();
-		currentClazz = null;
 		return clazz;
 	}
 
@@ -97,7 +100,7 @@ public class Parser {
 		// in the class declaration
 		// public class <classname> extends <superclass>
 		if (currLine[currIndex + 2].equals("extends")) {
-			currentClazz.superclass = currLine[currIndex + 3];
+			currentClazz.superclassName = currLine[currIndex + 3];
 		}
 	}
 
@@ -329,6 +332,34 @@ public class Parser {
 
 		return countDeclaredVariables(line.trim().split(" "), 0) + commaCount
 				- 1;
+	}
+
+	/**
+	 * Goes through every element and if applicable adds subclasses to their
+	 * parent class
+	 * 
+	 * @param clazzez
+	 *            the HashTable of all of the encountered classes
+	 */
+	public void organizeHierarchy(Hashtable<String, Clazz> clazzez) {
+		Clazz tempClazz;
+		ArrayList<String> classesToRemove = new ArrayList<String>();
+		for (Clazz clazz : clazzez.values()) {
+			if (clazz.superclassName != null) {
+				tempClazz = clazzez.get(clazz.superclassName);
+				
+				// In case we extend some external superclass
+				if (tempClazz == null)
+					continue;
+				
+				tempClazz.addSubclass(clazz);
+				classesToRemove.add(clazz.className);
+			}
+		}
+
+		for (String clazzName : classesToRemove) {
+			clazzez.remove(clazzName);
+		}
 	}
 
 	// ------------------
