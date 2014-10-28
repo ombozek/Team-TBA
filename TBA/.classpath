@@ -10,11 +10,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="lib" path="mockito-all-1.9.5.jar"/>
 	<classpathentry kind="lib" path="junit-4.11.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Java3DLib">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="C:/Program Files/Java/Java3D/1.5.2/bin"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="j3d-jre/lib/ext/j3dcore.jar"/>
 	<classpathentry kind="lib" path="j3d-jre/lib/ext/j3dutils.jar"/>
 	<classpathentry kind="lib" path="j3d-jre/lib/ext/vecmath.jar"/>
