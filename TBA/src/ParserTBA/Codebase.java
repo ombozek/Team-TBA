@@ -39,6 +39,10 @@ public class Codebase {
 		public void addMethod(Methodz methodz) {
 			methods.add(methodz);
 		}
+		
+		public ArrayList<Methodz> getMethods(){
+			return  methods;
+		}
 
 		@Override
 		public String toString() {

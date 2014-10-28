@@ -15,28 +15,25 @@ import ParserTBA.Codebase.types;
 import ParserTBA.Parser;
 
 public class ParserTest1 {
-	
+
 	ArrayList<String> files;
 	Parser parser;
 	BufferedReader mockReader;
 	Clazz clazz;
 	VarTable vTable;
 	Methodz method;
-	
+
 	@Before
 	public void setUp() {
-		
 		files = new ArrayList<String>();
 		parser = new Parser(files);
 		mockReader = Mockito.mock(BufferedReader.class);
 		clazz = new Clazz();
 		vTable = new VarTable();
-		method = new Methodz();
-		
 	}
 
 	@Test
-	public void testparse() {
+	public void testParse() {
 
 		// ArrayList<Clazz> testClasses = parser.parse();
 		// TODO: TEST
@@ -44,60 +41,66 @@ public class ParserTest1 {
 	}
 
 	@Test
-	public void testparseClass() {
+	public void testParseClass() {
 
 		// TODO: TEST
 
 	}
 
 	@Test
-	public void testparseMethod() throws Exception {
+	public void testParseMethodBodyEmpty() throws Exception {
 
-		String[] currLine = {"testMethod(){}"};
+		String[] currLine = { "public", "void", "testMethod(){}" };
 		parser.setCurrentClassForTestOnly(clazz);
 		parser.getCurrentClassForTestOnly();
 		parser.setBufferedReaderForTestOnly(mockReader);
 		parser.getBufferedReaderForTestOnly();
-		parser.parseMethod(currLine, 0);
-		
-		assertEquals("[MethodName: " + method.methodName + ", parameters: " + method.parameters
-				+ ", SLOC: " + method.sloc + "]", method.toString());
+		parser.parseMethodBody(currLine, 2);
+
+		// There should only be one method in there
+		clazz = parser.getCurrentClassForTestOnly();
+		assertEquals(1, clazz.getMethods().size());
+		method = parser.getCurrentClassForTestOnly().getMethods().get(0);
+
+		assertEquals("testMethod", method.methodName);
+		assertEquals(0, method.parameters);
+		assertEquals(0, method.sloc);
 	}
 
 	@Test
-	public void testtypeCount() throws Exception {
+	public void testCountKeywordsBoolean() throws Exception {
 
-		String[] line = {"public", "boolean", "hello,", "swag;"};
+		String[] line = { "public", "boolean", "hello,", "swag;" };
 		parser.setCurrentClassForTestOnly(clazz);
 		parser.setBufferedReaderForTestOnly(mockReader);
-		parser.typeCount(line, 0, vTable);
+		parser.countKeywords(line, 0, vTable);
 
 		assertEquals(2, vTable.getTable()[types.BOOLEAN.ordinal()]);
 	}
 
 	@Test
-	public void testmethodOrVar() {
+	public void testMethodOrVar() {
 
 		// TODO: TEST
 
 	}
 
 	@Test
-	public void testclassDeclaration() {
+	public void testParseClassDeclaration() {
 
 		// TODO: TEST
 
 	}
 
 	@Test
-	public void testmethodSignature() {
+	public void testParseMethodSignature() {
 
 		// TODO: TEST
 
 	}
 
 	@Test
-	public void testcommaCounter() {
+	public void testCountDeclaredVariables() {
 
 		// TODO: TEST
 

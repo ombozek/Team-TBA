@@ -21,6 +21,11 @@ public class Parser {
 		this.files = files;
 	}
 
+	/**
+	 * Runs the parser on every file passed in by our codebase
+	 * 
+	 * @return Codebase object representing entire codebase structure
+	 */
 	public Codebase parse() {
 		ArrayList<Clazz> classes = new ArrayList<Clazz>(files.size());
 
@@ -36,7 +41,15 @@ public class Parser {
 		return new Codebase(classes);
 	}
 
-	// Clazz is because clazz is a java keyword
+	/**
+	 * Parses a class by counting variables and gathering information on methods
+	 * 
+	 * @param file
+	 *            the current file being parsed
+	 * @return Clazz object filled with representative data
+	 * @throws Exception
+	 *             I/O Exceptions
+	 */
 	public Clazz parseClass(File file) throws Exception {
 		Clazz clazz = new Clazz();
 		clazz.className = file.getName().substring(0,
@@ -59,7 +72,7 @@ public class Parser {
 				currentClazz.numImports++;
 				break;
 			default:
-				typeCount(tokens, 0, currentClazz.varTable);
+				countKeywords(tokens, 0, currentClazz.varTable);
 				break;
 			}
 		}
@@ -71,17 +84,85 @@ public class Parser {
 		return clazz;
 	}
 
-	public void parseMethod(String[] currLine, int param) throws Exception {
+	/**
+	 * Reads in and parses a class declaration
+	 * 
+	 * @param currLine
+	 *            The tokenized version of the current line being parsed
+	 * @param currIndex
+	 *            0-based index of the keyword "class"
+	 */
+	public void parseClassDeclaration(String[] currLine, int currIndex) {
+		// looks for a superclass by searching for "extends" in the 4th element
+		// in the class declaration
+		// public class <classname> extends <superclass>
+		if (currLine[currIndex + 2].equals("extends")) {
+			currentClazz.superclass = currLine[currIndex + 3];
+		}
+	}
+
+	/**
+	 * Reads in and parses a method signature
+	 * 
+	 * @param currLine
+	 *            The tokenized version of the current line being parsed
+	 * @param currIndex
+	 *            the current index in the token array
+	 * @return
+	 * @throws Exception
+	 *             I/O Exceptions
+	 */
+	public int parseMethodSignature(String[] currLine, int currIndex)
+			throws Exception {
+		int paramCount = 0;
+		for (int index = currIndex; index < currLine.length; index++) {
+			// Get rid of unnecessary tokens
+			if (currLine[index].contains(",") || currLine[index].contains("<")) {
+				continue;
+			}
+			// If we close the parameter section, we're done
+			else if (currLine[index].contains(")")) {
+				return paramCount;
+			}
+			// count the parameters in the method signature
+			else {
+				paramCount++;
+			}
+		}
+
+		// If our params take over one line, call self recursively
+		String line = null;
+		while (line == null) {
+			line = buff.readLine();
+		}
+
+		return parseMethodSignature(line.trim().split(" "), 0) + paramCount;
+	}
+
+	/**
+	 * Parses a method by looking for parameters, name and lines of code.
+	 * Terminate on occurrence of closed bracket "}"
+	 * 
+	 * @param currLine
+	 *            The tokenized version of the current line being parsed
+	 * @param currIndex
+	 *            The 0-based index of the method name in currLine
+	 * @throws Exception
+	 *             I/O Exceptions
+	 */
+
+	public void parseMethodBody(String[] currLine, int currIndex)
+			throws Exception {
 		Methodz method = new Methodz();
 		String[] tokens = currLine;
 		String line;
 
 		// Extract method name
-		method.methodName = tokens[param].substring(0,
-				tokens[param].indexOf("("));
+		method.methodName = tokens[currIndex].substring(0,
+				tokens[currIndex].indexOf("("));
 
 		// Extract method parameters
-		method.parameters = methodSignature(tokens, param);
+		method.parameters = parseMethodSignature(tokens, currIndex);
 
 		int curlyCounter = 1;
 		while ((line = buff.readLine()) != null) {
@@ -108,126 +189,134 @@ public class Parser {
 		return;
 	}
 
-	public void typeCount(String[] line, int index, VarTable table)
+	/**
+	 * Searches for and counts keywords from inputed line
+	 * 
+	 * @param currLine
+	 *            The tokenized version of the current line being parsed
+	 * @param currIndex
+	 *            the current index of the token array
+	 * @param table
+	 *            the variable table we're populating through parsing
+	 * @throws Exception
+	 *             I/O Exceptions
+	 */
+	public void countKeywords(String[] currLine, int currIndex, VarTable table)
 			throws Exception {
-		switch (line[index]) {
+		switch (currLine[currIndex]) {
 		// These are either methods or variables
 		case "public":
 		case "private":
 		case "static":
-			methodOrVar(line, index + 1, table);
+			methodOrVar(currLine, currIndex + 1, table);
 			break;
 
 		// This can only be a variable
 		case "final":
-			if (line.length > index)
-				typeCount(line, index + 1, table);
+			if (currLine.length > currIndex)
+				countKeywords(currLine, currIndex + 1, table);
 			break;
 
 		// Used for identifying booleans
 		case "boolean":
 		case "Boolean":
-			table.increment(types.BOOLEAN, commaCounter(line, index));
+			table.increment(types.BOOLEAN,
+					countDeclaredVariables(currLine, currIndex));
 			break;
 
 		// Used for identifying ints
 		case "int":
 		case "Integer":
-			table.increment(types.INT, commaCounter(line, index));
+			table.increment(types.INT,
+					countDeclaredVariables(currLine, currIndex));
 			break;
 
 		// Used for identifying doubles
 		case "double":
 		case "Double":
-			table.increment(types.DOUBLE, commaCounter(line, index));
+			table.increment(types.DOUBLE,
+					countDeclaredVariables(currLine, currIndex));
 			break;
 
 		// Used for identifying Strings
 		case "String":
-			table.increment(types.STRING, commaCounter(line, index));
+			table.increment(types.STRING,
+					countDeclaredVariables(currLine, currIndex));
 			break;
 
 		// Used for identifying sets and lists
 		default:
-			if (line[index].contains("list") || line[index].contains("List")) {
+			if (currLine[currIndex].contains("list")
+					|| currLine[currIndex].contains("List")) {
 				table.increment(types.LIST);
-			} else if (line[index].contains("set")
-					|| line[index].contains("Set")) {
+			} else if (currLine[currIndex].contains("set")
+					|| currLine[currIndex].contains("Set")) {
 				table.increment(types.SET);
 			}
 		}
 	}
 
-	public void methodOrVar(String[] line, int index, VarTable table)
+	/**
+	 * Check whether the current structure is a method or variable declaration
+	 * 
+	 * @param currLine
+	 *            The tokenized version of the current line being parsed
+	 * @param currIndex
+	 *            the current index in the token array
+	 * @param table
+	 *            the variable table we're populating through parsing
+	 * @throws Exception
+	 *             I/O Exceptions
+	 */
+	public void methodOrVar(String[] currLine, int currIndex, VarTable table)
 			throws Exception {
 		// Ensure we won't overflow
-		if (line.length < index) {
+		if (currLine.length < currIndex) {
 			return;
 		}
 
 		// If it's a method, parse it
-		if (line[index].contains("(")) {
-			parseMethod(line, index);
-		} else if (line[index + 1].contains("(")) {
-			parseMethod(line, index + 1);
-		} else if (line.length < index + 2 && line[index + 2].contains("(")) {
-			parseMethod(line, index + 2);
+		if (currLine[currIndex].contains("(")) {
+			parseMethodBody(currLine, currIndex);
+		} else if (currLine[currIndex + 1].contains("(")) {
+			parseMethodBody(currLine, currIndex + 1);
+		} else if (currLine.length < currIndex + 2
+				&& currLine[currIndex + 2].contains("(")) {
+			parseMethodBody(currLine, currIndex + 2);
 		}
 		// Check if it's a class declaration
-		else if (line[index].equals("class")) {
-			classDeclaration(line, index);
+		else if (currLine[currIndex].equals("class")) {
+			parseClassDeclaration(currLine, currIndex);
 		}
 		// Otherwise continue counting types if relevant
 		else {
-			typeCount(line, index, table);
+			countKeywords(currLine, currIndex, table);
 		}
 	}
 
-	public void classDeclaration(String[] tokens, int index) {
-		// looks for a superclass by searching for "extends" in the 4th element
-		// in the class declaration
-		// public class <classname> extends <superclass>
-		if (tokens[index + 2].equals("extends")) {
-			currentClazz.superclass = tokens[index + 3];
-		}
-	}
-
-	public int methodSignature(String[] tokens, int params) throws Exception {
-		int paramCount = 0;
-		for (int index = params; index < tokens.length; index++) {
-			// Get rid of unnecessary tokens
-			if (tokens[index].contains(",") || tokens[index].contains("<")) {
-				continue;
-			}
-			// If we close the parameter section, we're done
-			else if (tokens[index].contains(")")) {
-				return paramCount;
-			}
-			// count the parameters in the method signature
-			else {
-				paramCount++;
-			}
-		}
-
-		// If our params take over one line, call self recursively
-		String line = null;
-		while (line == null) {
-			line = buff.readLine();
-		}
-
-		return methodSignature(line.trim().split(" "), 0) + paramCount;
-	}
-
-	public int commaCounter(String[] tokens, int params) throws Exception {
+	/**
+	 * Counts the number of declared objects in a given line. Terminates on
+	 * occurrence of a semicolon ";"
+	 * 
+	 * @param currLine
+	 *            The tokenized version of the current line being parsed
+	 * @param currIndex
+	 *            the current index in the token array
+	 * @return
+	 * @throws Exception
+	 *             I/O Exceptions
+	 */
+	public int countDeclaredVariables(String[] currLine, int currIndex)
+			throws Exception {
 		int commaCount = 1;
-		for (int index = params; index < tokens.length; index++) {
+		for (int index = currIndex; index < currLine.length; index++) {
 			// Get rid of unnecessary tokens
-			if (tokens[index].contains(",")) {
+			if (currLine[index].contains(",")) {
 				commaCount++;
 				continue;
 			}
 			// If we close the parameter section, we're done
-			else if (tokens[index].contains(";")) {
+			else if (currLine[index].contains(";")) {
 				return commaCount;
 			}
 		}
@@ -238,25 +327,40 @@ public class Parser {
 			line = buff.readLine();
 		}
 
-		return commaCounter(line.trim().split(" "), 0) + commaCount - 1;
+		return countDeclaredVariables(line.trim().split(" "), 0) + commaCount
+				- 1;
 	}
 
-	// TEST METHODS ONLY
-	
+	// ------------------
+	// TEST METHODS ONLY!
+	// ------------------
+
+	/**
+	 * SHOULD ONLY BE USED IN TEST CLASSES
+	 */
 	public void setBufferedReaderForTestOnly(BufferedReader reader) {
 		this.buff = reader;
 	}
-	
+
+	/**
+	 * SHOULD ONLY BE USED IN TEST CLASSES
+	 */
 	public BufferedReader getBufferedReaderForTestOnly() {
 		return this.buff;
 	}
-	
+
+	/**
+	 * SHOULD ONLY BE USED IN TEST CLASSES
+	 */
 	public Clazz getCurrentClassForTestOnly() {
 		return this.currentClazz;
 	}
-	
+
+	/**
+	 * SHOULD ONLY BE USED IN TEST CLASSES
+	 */
 	public void setCurrentClassForTestOnly(Clazz clazz) {
 		this.currentClazz = clazz;
 	}
-	
+
 }
