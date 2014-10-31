@@ -1,20 +1,17 @@
 package ParserTBA;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 public class Codebase {
-
-	public int files;
-	public static final String[] vars = { "int", "string", "char", "double",
-			"boolean", "list", "set", "array" };
 
 	public enum types {
 		INT, STRING, CHAR, DOUBLE, BOOLEAN, LIST, SET, ARRAY
 	}
 
-	ArrayList<Clazz> classes;
+	Hashtable<String, Clazz> classes;
 
-	public Codebase(ArrayList<Clazz> classes) {
+	public Codebase(Hashtable<String, Clazz> classes) {
 		this.classes = classes;
 	}
 
@@ -22,7 +19,7 @@ public class Codebase {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("[Codebase: ");
-		for (Clazz clazz : classes) {
+		for (Clazz clazz : classes.values()) {
 			builder.append(clazz.toString());
 			builder.append(", ");
 		}
@@ -31,29 +28,63 @@ public class Codebase {
 
 	public static class Clazz {
 		int numImports;
-		String superclass;
+		Clazz superclass;
+		String superclassName;
+		ArrayList<Clazz> subclasses;
 		ArrayList<Methodz> methods = new ArrayList<Methodz>();
 		String className;
+
 		VarTable varTable = new VarTable();
 
 		public void addMethod(Methodz methodz) {
 			methods.add(methodz);
 		}
 
+		public ArrayList<Methodz> getMethods() {
+			return methods;
+		}
+
+		public void addSubclass(Clazz subclass) {
+			if (subclasses == null)
+				subclasses = new ArrayList<Clazz>();
+			subclasses.add(subclass);
+			subclass.superclass = this;
+
+		}
+
+		public ArrayList<Clazz> getSubclasses() {
+			return subclasses;
+		}
+
 		@Override
 		public String toString() {
 			StringBuilder builder = new StringBuilder();
 			builder.append("[ClassName: " + className);
-			builder.append(", Superclass: " + superclass);
 			builder.append(", Imports: " + numImports);
+			builder.append(", Superclass: " + superclassName);
 			builder.append(", Variables: " + varTable.toString());
 			builder.append(", Methods: [");
 
+			StringBuilder methodBuilder = new StringBuilder();
 			for (Methodz method : methods) {
-				builder.append(method.toString() + ", ");
+				methodBuilder.append(method.toString() + ", ");
+			}
+			builder.append(methodBuilder.toString().substring(0,
+					methodBuilder.length() - 2)
+					+ "], ");
+
+			if (subclasses != null && !subclasses.isEmpty()) {
+				StringBuilder subBuilder = new StringBuilder();
+				builder.append("Subclasses: [");
+				for (Clazz subclass : subclasses) {
+					subBuilder.append(subclass.toString() + ", ");
+				}
+				builder.append(subBuilder.toString().substring(0,
+						subBuilder.length() - 2));
+				builder.append("], ");
 			}
 
-			return builder.toString().substring(0, builder.length() - 2) + "]]";
+			return builder.toString().substring(0, builder.length() - 2) + "]";
 		}
 
 	}
