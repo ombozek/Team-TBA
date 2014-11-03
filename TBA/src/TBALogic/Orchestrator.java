@@ -1,9 +1,9 @@
 package TBALogic;
 
-import java.util.ArrayList;
-
 import ParserTBA.Codebase;
 import ParserTBA.Parser;
+import TBALogic.TBALogic.StupidContainer;
+import TBALogic.TBALogic.StupidContainer.LogOp;
 
 public class Orchestrator {
 	public static final int maxFiles = 30;
@@ -11,14 +11,23 @@ public class Orchestrator {
 
 	public static void main(String[] args) {
 		// Generate a list of files to parse
-		ArrayList<String> sourceFiles;
-		sourceFiles = new TBALogic().generateFileList();
-		if (sourceFiles == null) {
-			System.exit(0);
+		StupidContainer parsingResults;
+		try {
+			parsingResults = new TBALogic().generateFileList();
+			if (parsingResults == null) {
+				System.exit(0);
+			}
+			for (LogOp op : parsingResults.gitLog) {
+				System.out.println(op);
+			}
+			// Parse the files
+			Codebase codebase = new Parser(parsingResults.sourceFiles).parse();
+			System.out.println(codebase.toString());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		// Parse the files
-		Codebase codebase = new Parser(sourceFiles).parse();
-		System.out.println(codebase.toString());
+
 		// Send structure to output generator
 
 		System.exit(0);

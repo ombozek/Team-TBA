@@ -1,11 +1,18 @@
 package TBALogic;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+
+import TBALogic.TBALogic.StupidContainer.LogOp;
+import TBALogic.TBALogic.StupidContainer.Ops;
 
 public class TBALogic {
 
@@ -13,24 +20,29 @@ public class TBALogic {
 	public final int ATTEMPTS = 3;
 	public final int MAX_FILES = 25;
 	public final int MIN_FILES = 5;
+	public final String WINDOWS = "windows";
+	public final String GIT = ".git";
+	public String gitDir;
+	public ArrayList<LogOp> logs;
 
 	/**
 	 * Finds all java files in the codebase
 	 * 
 	 * @return an arraylist of all java files in the codebase
+	 * @throws IOException
 	 */
-	public ArrayList<String> generateFileList() {
+	public StupidContainer generateFileList() throws IOException {
 		int tries = 0;
-		ArrayList<String> files;
+		StupidContainer parsingResults;
 
 		do {
 			tries++;
-			files = populateFileList();
+			parsingResults = populateFileList();
 
-			if (files == null)
+			if (parsingResults.sourceFiles == null)
 				continue;
 
-			if (checkValidCodebase(files.size()))
+			if (checkValidCodebase(parsingResults.sourceFiles.size()))
 				break;
 
 		} while (tries < ATTEMPTS);
@@ -38,7 +50,7 @@ public class TBALogic {
 		if (tries > ATTEMPTS)
 			return null;
 
-		return files;
+		return parsingResults;
 	}
 
 	/**
@@ -47,8 +59,9 @@ public class TBALogic {
 	 * 
 	 * @return an arraylist of all of the absolute paths to the files in the
 	 *         codebase
+	 * @throws IOException
 	 */
-	private ArrayList<String> populateFileList() {
+	private StupidContainer populateFileList() throws IOException {
 		String root = getCodeRoot();
 		if (root == null) {
 			return null;
@@ -57,7 +70,52 @@ public class TBALogic {
 		ArrayList<String> files = new ArrayList<String>();
 		searchDFS(new File(root).listFiles(), files);
 
-		return files;
+		String dir = System.getProperty("user.dir");
+		boolean windows = System.getProperty("os.name").toLowerCase()
+				.contains("windows");
+
+		if (gitDir == null)
+			return new StupidContainer(files);
+
+		logs = new ArrayList<LogOp>();
+		if (windows) {
+			Process p = Runtime.getRuntime().exec(
+					"cmd /C " + dir + "\\gitlog.sh " + gitDir);
+			BufferedReader in = new BufferedReader(new InputStreamReader(
+					p.getInputStream()));
+			String line = null;
+			while ((line = in.readLine()) != null) {
+				if (line.contains(".java")) {
+					if (line.startsWith("A")) {
+						logs.add(new LogOp(Ops.ADD, extractName(line)));
+					} else {
+						logs.add(new LogOp(Ops.DELETE, extractName(line)));
+					}
+				}
+			}
+		} else {
+			// TODO get this working on Linux Kernel
+			Runtime.getRuntime().exec(
+					"SOMETHING GOES HERE" + dir + "/gitlog.sh " + gitDir);
+		}
+		Collections.reverse(logs);
+		return new StupidContainer(files, logs);
+	}
+
+	/**
+	 * Extracts the filename from a git commit line
+	 * 
+	 * @param line
+	 *            the line containing the name of the file
+	 * @return the name of the file
+	 */
+	public String extractName(String line) {
+		// Linux case
+		if (line.contains("/")) {
+			return line.substring(line.lastIndexOf("/") + 1, line.indexOf("."));
+		}
+		// Root dir case
+		return line.substring(1).trim();
 	}
 
 	/**
@@ -101,6 +159,9 @@ public class TBALogic {
 
 		for (File file : files) {
 			if (file.isDirectory()) {
+				if (file.getAbsolutePath().endsWith(GIT)) {
+					gitDir = file.getAbsolutePath();
+				}
 				searchDFS(file.listFiles(), list);
 			} else {
 				if (file.getName().endsWith(EXTENSION)) {
@@ -121,7 +182,7 @@ public class TBALogic {
 		JFrame frame = new JFrame();
 		JFileChooser chooser = new JFileChooser();
 		// Set proper options for root selector
-		chooser.setCurrentDirectory(new File("."));
+		chooser.setCurrentDirectory(new File(".."));
 		chooser.setDialogTitle("Please Select Codebase Root Directory");
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		chooser.setAcceptAllFileFilterUsed(false);
@@ -137,5 +198,47 @@ public class TBALogic {
 		rootDir = chooser.getSelectedFile().getAbsolutePath();
 		frame.dispose();
 		return rootDir;
+	}
+
+	/**
+	 * This class just contains the order in which bits are added to the git
+	 * repo being parsed as well as all of the files inside the codebase
+	 */
+	public static class StupidContainer {
+		public final ArrayList<String> sourceFiles;
+		public final ArrayList<LogOp> gitLog;
+
+		public enum Ops {
+			ADD, DELETE
+		};
+
+		public StupidContainer(ArrayList<String> files) {
+			this.sourceFiles = files;
+			this.gitLog = null;
+		}
+
+		public StupidContainer(ArrayList<String> files, ArrayList<LogOp> logs) {
+			this.sourceFiles = files;
+			this.gitLog = logs;
+		}
+
+		public boolean hasValidGitRepo() {
+			return gitLog != null;
+		}
+
+		public static class LogOp {
+			public final Ops op;
+			public final String fileName;
+
+			public LogOp(Ops op, String fileName) {
+				this.op = op;
+				this.fileName = fileName;
+			}
+
+			@Override
+			public String toString() {
+				return "Operation: " + op.toString() + " " + fileName;
+			}
+		}
 	}
 }
