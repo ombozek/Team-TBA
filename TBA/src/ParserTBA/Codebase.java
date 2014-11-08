@@ -69,9 +69,10 @@ public class Codebase {
 			for (Methodz method : methods) {
 				methodBuilder.append(method.toString() + ", ");
 			}
-			builder.append(methodBuilder.toString().substring(0,
-					methodBuilder.length() - 2)
-					+ "], ");
+			if (methodBuilder.length() > 2)
+				builder.append(methodBuilder.toString().substring(0,
+						methodBuilder.length() - 2)
+						+ "], ");
 
 			if (subclasses != null && !subclasses.isEmpty()) {
 				StringBuilder subBuilder = new StringBuilder();
