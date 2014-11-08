@@ -46,9 +46,6 @@ public class Orchestrator {
 				System.exit(0);
 
 			try {
-				System.out.println("\nRUNNING CLEANUP");
-				System.out.println("cmd /C " + userDir + "\\scripts\\cleanup.sh "
-									+ parsingResults.codeRoot + "\\");
 				if (isOSWindows) {
 					Runtime.getRuntime().exec(
 							"cmd /C " + userDir + "\\scripts\\cleanup.sh "
