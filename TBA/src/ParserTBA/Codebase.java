@@ -35,7 +35,7 @@ public class Codebase {
 		String className;
 
 		VarTable varTable = new VarTable();
-
+		
 		public void addMethod(Methodz methodz) {
 			methods.add(methodz);
 		}
@@ -55,7 +55,14 @@ public class Codebase {
 		public ArrayList<Clazz> getSubclasses() {
 			return subclasses;
 		}
-
+		
+		// TEST METHODS ONLY
+		
+		public void SetClassName(String name)
+		{
+			className = name;
+		}
+		
 		@Override
 		public String toString() {
 			StringBuilder builder = new StringBuilder();
@@ -88,6 +95,13 @@ public class Codebase {
 			return builder.toString().substring(0, builder.length() - 2) + "]";
 		}
 
+
+		public String getSuperClassNameForTestOnly() {
+			if(superclass == null)
+				return "";
+			
+			return this.superclass.className;
+		}
 	}
 
 	public static class Methodz {
@@ -134,5 +148,6 @@ public class Codebase {
 
 			return builder.toString().substring(0, builder.length() - 2) + "]";
 		}
+		
 	}
 }
