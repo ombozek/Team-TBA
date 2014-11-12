@@ -63,6 +63,13 @@ public class Codebase {
 			className = name;
 		}
 		
+		public String getSuperClassNameForTestOnly() {
+			if(superclass == null)
+				return "";
+			
+			return this.superclass.className;
+		}
+		
 		@Override
 		public String toString() {
 			StringBuilder builder = new StringBuilder();
@@ -93,14 +100,6 @@ public class Codebase {
 			}
 
 			return builder.toString().substring(0, builder.length() - 2) + "]";
-		}
-
-
-		public String getSuperClassNameForTestOnly() {
-			if(superclass == null)
-				return "";
-			
-			return this.superclass.className;
 		}
 	}
 
