@@ -12,12 +12,12 @@ public class Universe {
 		// TODO Auto-generated constructor stub
 
 	   SimpleUniverse universe = new SimpleUniverse();
-
-	   BranchGroup group = new BranchGroup();
+	   
+	   BranchGroup maingroup = new BranchGroup();
 	   Color3f blue = new Color3f(1.8f,0.1f,0.1f);
 	   
 	   //Planet( Vector3f axis, float radius, float orbit_radius, Color3f color)
-	   Planet sun = new Planet(new Vector3f(0,0,1),5,25,blue,group);
+	   Planet sun = new Planet(new Vector3f(0,0,1),5,25,blue,maingroup);
 	   
 	  
 
@@ -26,15 +26,14 @@ public class Universe {
 	   Vector3f light1Direction = new Vector3f(4.0f,-7.0f,-12.0f);
 	   DirectionalLight light1 = new DirectionalLight(light1Color, light1Direction);
 	   light1.setInfluencingBounds(bounds);
-	   group.addChild(light1);
+	   maingroup.addChild(light1);
 	   universe.getViewingPlatform().setNominalViewingTransform();
 
-	   universe.addBranchGraph(group);
+	   universe.addBranchGraph(maingroup);
 
 	}
 
 	public static void main( String[] args ) {
-
 	   new Universe();
 
 	}
