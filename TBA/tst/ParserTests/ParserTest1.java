@@ -48,7 +48,7 @@ public class ParserTest1 {
 		
 		parser.setCurrentClassForTestOnly(clazz);
 		parser.getCurrentClassForTestOnly();
-		// TODO: TEST
+		// TODO: 
 
 	}
 	
