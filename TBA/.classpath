@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="j3d-jre/bin">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="TBA/j3d-jre/bin"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="src" path="tst"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="lib" path="mockito-all-1.9.5.jar"/>
 	<classpathentry kind="lib" path="junit-4.11.jar"/>
-	<classpathentry kind="lib" path="j3d-jre/lib/ext/j3dcore.jar"/>
-	<classpathentry kind="lib" path="j3d-jre/lib/ext/j3dutils.jar"/>
-	<classpathentry kind="lib" path="j3d-jre/lib/ext/vecmath.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/j3d">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="C:/Users/Small Fry/Downloads/j3d-/j3d-1_5_2-windows-i586/j3d-jre-intel/bin"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

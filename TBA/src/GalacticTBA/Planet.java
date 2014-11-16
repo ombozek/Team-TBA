@@ -1,5 +1,6 @@
 package GalacticTBA;
 import com.sun.j3d.utils.geometry.*;
+
 import javax.vecmath.*;
 import javax.media.j3d.Alpha;
 import javax.media.j3d.Appearance;
@@ -37,8 +38,8 @@ public class Planet {
 			this.sphere = new Sphere(radius);
 	
 		//Create Transform Group for just this object			
-			this.tg_rot = rotate(this.sphere, new Alpha(1,1000));
-			this.tg_trans = translate(this.tg_rot,new Vector3f(this.orbit_radius,0,0));
+			/*this.tg_rot = rotate(this.sphere, new Alpha(1,1000));
+			this.tg_trans = translate(this.tg_rot,new Vector3f(this.orbit_radius,0,0));*/
 			
 		//Apply Coloring Attributes
 			this.ca = new ColoringAttributes(color,ColoringAttributes.NICEST);
@@ -47,9 +48,24 @@ public class Planet {
 	}
 	//Constructor to add to main branchgroup
 	public Planet(Vector3f axis, float radius, float orbit_radius, Color3f color,BranchGroup g){
-		this(axis,radius,orbit_radius,color);
+		//Set Properties of sphere
+		this.setColor(color);
+		this.radius = radius;
+		this.axis = new Vector3f(0,0,1f);
+		this.orbit_radius = orbit_radius;
+	//Create Sphere Object
+		this.sphere = new Sphere(1);
+		
+	//Create Transform Group for just this object			
+		/*this.tg_rot = rotate(this.sphere, new Alpha(1,1000));
+		this.tg_trans = translate(this.tg_rot,new Vector3f(this.orbit_radius,0,0));*/
+		g.addChild(this.sphere);
+	//Apply Coloring Attributes
+		/*this.ca = new ColoringAttributes(color,ColoringAttributes.NICEST);
+		this.ap.setColoringAttributes(ca);
+		this.sphere.setAppearance(ap);*/
 		//Add Sphere to main branchgroup
-		g.addChild(this.tg_trans);
+		
 	}
 	//Constructor to add to a parent transformgroup
 	public Planet(int x, int y, int z, Vector3f axis, float radius,float orbit_radius, Color3f color, TransformGroup tg){
