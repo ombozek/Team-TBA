@@ -1,13 +1,17 @@
 package ParserTests;
 
+import static org.junit.Assert.*;
+
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import static org.junit.Assert.assertEquals;
 import ParserTBA.Codebase.Clazz;
 import ParserTBA.Codebase.Methodz;
 import ParserTBA.Codebase.VarTable;
@@ -38,9 +42,13 @@ public class ParserTest1 {
 	@Test
 	public void testParse() {
 
-		// ArrayList<Clazz> testClasses = parser.parse();
-		// TODO: TEST
-
+		/*ArrayList<Clazz> testClasses;
+		parser.parse();
+		File file = new File("C:\\MyFile.txt");
+	    FileInputStream fis = null;
+	    BufferedInputStream bis = null;
+	    DataInputStream dis = null;*/
+   
 	}
 
 	@Test
@@ -66,7 +74,6 @@ public class ParserTest1 {
 		clazz = parser.getCurrentClassForTestOnly();
 		
 		assertEquals("OtherClass", clazz.getSuperClassNameForTestOnly());
-		
 	}
 
 	@Test
@@ -103,21 +110,19 @@ public class ParserTest1 {
 	@Test
 	public void testMethodOrVarMethod() throws Exception {
 
-		String[] currLine = { "pubic", "void", "method()" };
+		String[] currLine = { "public", "void", "method()" };
 		
 		parser.setCurrentClassForTestOnly(clazz);
 		parser.setBufferedReaderForTestOnly(mockReader);
 		parser.methodOrVar(currLine, 2, vTable);
 		method = parser.getCurrentClassForTestOnly().getMethods().get(0);
 		assertEquals("method", method.methodName);
-
 	}
 	
 	@Test
 	public void testMethodOrVarVar() throws Exception {
-		
 		// TODO: TEST
-		
+
 	}
 
 	@Test
@@ -135,16 +140,24 @@ public class ParserTest1 {
 	}
 
 	@Test
-	public void testCountDeclaredVariables() {
+	public void testCountDeclaredVariables() throws Exception {
 
 		// TODO: TEST
-
+		String[] currLine = { "public", "void", "varTable", "var1", ",", "var2", "var3",",", ";" };
+		
+		parser.setCurrentClassForTestOnly(clazz);
+		parser.getCurrentClassForTestOnly();
+		parser.setBufferedReaderForTestOnly(mockReader);
+		parser.getBufferedReaderForTestOnly();
+		int num = parser.countDeclaredVariables(currLine, 4);
+		assertEquals(3, num);
+		
 	}
 	
 	@Test
 	public void testorganizeHierarchy() {
 		
-		// TODO: TEST
+			// TODO: TEST
 		
 	}
 }

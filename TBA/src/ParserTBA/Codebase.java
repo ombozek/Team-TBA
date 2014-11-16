@@ -69,7 +69,7 @@ public class Codebase {
 			
 			return this.superclass.className;
 		}
-		
+
 		@Override
 		public String toString() {
 			StringBuilder builder = new StringBuilder();
