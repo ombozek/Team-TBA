@@ -31,16 +31,16 @@ public class Planet {
 	public Planet(Vector3f axis, float radius, float orbit_radius, Color3f color){
 		//Set Properties of sphere
 			this.setColor(color);
-			this.radius = radius;
+			this.radius = radius/100;
 			this.axis = new Vector3f(0,0,1f);
-			this.orbit_radius = orbit_radius;
+			this.orbit_radius = orbit_radius/50;
 		//Create Sphere Object
-			this.sphere = new Sphere(radius);
+			this.sphere = new Sphere(this.radius);
 	
 		//Create Transform Group for just this object			
-			/*this.tg_rot = rotate(this.sphere, new Alpha(1,1000));
-			this.tg_trans = translate(this.tg_rot,new Vector3f(this.orbit_radius,0,0));*/
 			
+			this.tg_trans = translate(this.sphere,new Vector3f(this.orbit_radius,0,0));
+			this.tg_rot = rotate(this.tg_trans, new Alpha(-1,(long) (radius+orbit_radius)*100));
 		//Apply Coloring Attributes
 			this.ca = new ColoringAttributes(color,ColoringAttributes.NICEST);
 			this.ap.setColoringAttributes(ca);
@@ -48,29 +48,28 @@ public class Planet {
 	}
 	//Constructor to add to main branchgroup
 	public Planet(Vector3f axis, float radius, float orbit_radius, Color3f color,BranchGroup g){
-		//Set Properties of sphere
-		this.setColor(color);
-		this.radius = radius;
-		this.axis = new Vector3f(0,0,1f);
-		this.orbit_radius = orbit_radius;
-	//Create Sphere Object
-		this.sphere = new Sphere(1);
-		
-	//Create Transform Group for just this object			
-		/*this.tg_rot = rotate(this.sphere, new Alpha(1,1000));
-		this.tg_trans = translate(this.tg_rot,new Vector3f(this.orbit_radius,0,0));*/
-		g.addChild(this.sphere);
-	//Apply Coloring Attributes
-		/*this.ca = new ColoringAttributes(color,ColoringAttributes.NICEST);
-		this.ap.setColoringAttributes(ca);
-		this.sphere.setAppearance(ap);*/
-		//Add Sphere to main branchgroup
-		
+		this(axis,radius,orbit_radius,color);
+		g.addChild(this.tg_rot);
 	}
 	//Constructor to add to a parent transformgroup
-	public Planet(int x, int y, int z, Vector3f axis, float radius,float orbit_radius, Color3f color, TransformGroup tg){
-		this(axis,radius,orbit_radius,color);
-		tg.addChild(this.tg_trans);
+	public Planet(Vector3f axis, float radius,float orbit_radius, Color3f color, TransformGroup tg){
+		//Set Properties of sphere
+		this.setColor(color);
+		this.radius = radius/100;
+		this.axis = new Vector3f(0,0,1f);
+		this.orbit_radius = orbit_radius/50;
+	//Create Sphere Object
+		this.sphere = new Sphere(this.radius);
+
+	//Create Transform Group for just this object			
+		
+		this.tg_trans = translate(this.sphere,new Vector3f(this.orbit_radius,0,0));
+		this.tg_rot = rotate(this.tg_trans, new Alpha(-1,(long) (radius+orbit_radius)*1000));
+	//Apply Coloring Attributes
+		this.ca = new ColoringAttributes(color,ColoringAttributes.NICEST);
+		this.ap.setColoringAttributes(ca);
+		this.sphere.setAppearance(ap);
+		tg.addChild(this.tg_rot);
 	}
 	private void setColor(Color3f c) {
 		this.color=c;
