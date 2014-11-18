@@ -129,13 +129,13 @@ public class ParserTest1 {
 	@Test
 	public void testParseMethodSignature() throws Exception {
 
-		String[] currLine = { "public", "void", "method,", "i", "j" };
+		String[] currLine = { "public", "void", "method(","int", "i","boolean", "j)" };
 		
 		parser.setCurrentClassForTestOnly(clazz);
 		parser.getCurrentClassForTestOnly();
 		parser.setBufferedReaderForTestOnly(mockReader);
 		parser.getBufferedReaderForTestOnly();
-		int num = parser.parseMethodSignature(currLine, 3);
+		int num = parser.parseMethodSignature(currLine, 4);
 		assertEquals(2, num);
 
 	}
