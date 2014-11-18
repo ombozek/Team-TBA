@@ -49,7 +49,11 @@ public class Planet {
 		//Apply Coloring Attributes
 			this.ca = new ColoringAttributes(color,ColoringAttributes.NICEST);
 			this.ap.setColoringAttributes(ca);
-			this.ap.setMaterial( new Material(color, new Color3f(Color.black), color, new Color3f(Color.black), 1.0f));
+			this.ap.setMaterial( new Material(color, new Color3f(Color.black), color, new Color3f(Color.YELLOW), 1.0f));
+			this.mat = new Material(color, new Color3f(Color.black), color, color, 1.0f);
+			//mat.setColorTarget(Material.AMBIENT_AND_DIFFUSE);
+			this.mat.setLightingEnable(true);
+			this.ap.setMaterial(mat );
 			this.sphere.setAppearance(ap);
 	}
 	//Constructor to add to main branchgroup

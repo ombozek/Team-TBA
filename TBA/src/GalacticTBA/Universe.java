@@ -25,6 +25,7 @@ public class Universe {
 	   Color3f red = new Color3f(0.9f,0.1f,0.1f);
 	   Color3f yellow = new Color3f(Color.YELLOW);
 	   Color3f white = new Color3f(Color.WHITE);
+	   Color3f orange = new Color3f(Color.ORANGE);
 	   //Planet( Vector3f axis, float radius, float orbit_radius, Color3f color)
 	   Planet hole = new Planet(new Vector3f(0,0,1),(float) 0,0,yellow,viewgroup);
 	   Planet sun = new Sun(new Vector3f(0,0,1),(float) 50,300,yellow,hole.tg_trans);
@@ -38,7 +39,7 @@ public class Universe {
 	   for(int i = 0; i < 5; i++){
 		   new Planet(new Vector3f(0,0,1),(float) i,10+5*i,white,jupiter.tg_trans);
 	   }
-	   Planet sun2 = new Planet(new Vector3f(0,0,1),(float) 50,500,yellow,sun.tg_trans);
+	   Planet sun2 = new Sun(new Vector3f(0,0,1),(float) 50,500,white,sun.tg_trans);
 	   
 	   
 	   Planet earth2 = new Planet(new Vector3f(0,0,1),(float) 10,100,blue,sun2.tg_trans);
