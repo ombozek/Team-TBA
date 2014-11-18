@@ -5,7 +5,6 @@ import java.io.IOException;
 import ParserTBA.Codebase;
 import ParserTBA.Parser;
 import TBALogic.TBALogic.StupidContainer;
-import TBALogic.TBALogic.StupidContainer.LogOp;
 
 public class Orchestrator {
 	public static final int maxFiles = 30;
@@ -18,31 +17,25 @@ public class Orchestrator {
 		StupidContainer parsingResults = null;
 		try {
 			userDir = System.getProperty("user.dir");
-			
+
 			isOSWindows = System.getProperty("os.name").toLowerCase()
 					.contains("windows");
-			
+
 			parsingResults = new TBALogic(isOSWindows).generateFileList();
-			
+
 			if (parsingResults == null) {
 				System.exit(0);
 			}
-			
-			for (LogOp op : parsingResults.gitLog) {
-				System.out.println(op);
-			}
-			
+
 			// Parse the files
 			Codebase codebase = new Parser(parsingResults.sourceFiles).parse();
 			System.out.println(codebase.toString());
-		
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			if (parsingResults == null)
-				System.exit(0);
-			if (parsingResults.folderName == null)
+			if (parsingResults == null || parsingResults.folderName == null)
 				System.exit(0);
 
 			try {

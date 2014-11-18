@@ -19,7 +19,7 @@ public class TBALogic {
 
 	private final String EXTENSION = ".java";
 	private final int ATTEMPTS = 3;
-	private final int MAX_FILES = 25;
+	private final int MAX_FILES = 50;
 	private final int MIN_FILES = 5;
 	private final String GIT = ".git";
 	private final boolean isOSWindows;
