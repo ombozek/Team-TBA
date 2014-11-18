@@ -1,13 +1,15 @@
 package ParserTests;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.BufferedReader;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import static org.junit.Assert.assertEquals;
 import ParserTBA.Codebase.Clazz;
 import ParserTBA.Codebase.Methodz;
 import ParserTBA.Codebase.VarTable;
@@ -22,13 +24,17 @@ public class ParserTest1 {
 	Clazz clazz;
 	VarTable vTable;
 	Methodz method;
+	public final String[] classNames = { "class1", "class2", "class3",
+			"class4", "class5" };
+	public final String[] subClassNames = { "subclass1", "subclass2",
+			"subclass3", "subclass4", "subclass5" };
 
 	@Before
 	public void setUp() {
 		files = new ArrayList<String>();
 		parser = new Parser(files);
 		mockReader = Mockito.mock(BufferedReader.class);
-		clazz = new Clazz();
+		clazz = new Clazz(classNames[0]);
 		vTable = new VarTable();
 	}
 
@@ -104,5 +110,93 @@ public class ParserTest1 {
 
 		// TODO: TEST
 
+	}
+
+	@Test
+	public void testOrganizeHierarchyNoInheritance() {
+		Hashtable<String, Clazz> classes = makeFileList();
+		Parser parser = new Parser(null);
+
+		parser.organizeHierarchy(classes);
+		assertEquals(classNames.length, classes.values().size());
+	}
+
+	@Test
+	public void testOrganizeHierarchySingleInheritance() {
+		Hashtable<String, Clazz> classes = makeFileList();
+		Parser parser = new Parser(null);
+
+		Clazz tempClazz;
+		for (int i = 0; i < subClassNames.length; i++) {
+
+			tempClazz = new Clazz(subClassNames[i]);
+			tempClazz.superclassName = classNames[i];
+			classes.put(subClassNames[i], tempClazz);
+		}
+
+		assertEquals(classNames.length + subClassNames.length, classes.values()
+				.size());
+		parser.organizeHierarchy(classes);
+		assertEquals(classNames.length, classes.values().size());
+
+		for (int i = 0; i < classNames.length; i++) {
+			// Test each class only has 1 subclass
+			assertEquals(1, classes.get(classNames[i]).getSubclasses().size());
+			// Test each class has it's proper subclass
+			assertEquals(subClassNames[i], classes.get(classNames[i])
+					.getSubclasses().get(0).getClassName());
+		}
+	}
+
+	@Test
+	public void testOrganizeHierarchyDoubleInheritance() {
+		Hashtable<String, Clazz> classes = makeFileList();
+		Parser parser = new Parser(null);
+		final String PREFIX = "DOUBLE";
+
+		Clazz tempClazz;
+		for (int i = 0; i < subClassNames.length; i++) {
+
+			tempClazz = new Clazz(subClassNames[i]);
+			tempClazz.superclassName = classNames[i];
+			classes.put(subClassNames[i], tempClazz);
+
+			// DOUBLE RAINBOW (or sub-sub-class, whatever)
+			tempClazz = new Clazz(PREFIX + subClassNames[i]);
+			tempClazz.superclassName = subClassNames[i];
+			classes.put(PREFIX + subClassNames[i], tempClazz);
+		}
+
+		assertEquals(classNames.length + subClassNames.length * 2, classes
+				.values().size());
+		parser.organizeHierarchy(classes);
+		assertEquals(classNames.length, classes.values().size());
+
+		for (int i = 0; i < classNames.length; i++) {
+			tempClazz = classes.get(classNames[i]);
+			// Test each class only has 1 subclass
+			assertEquals(1, tempClazz.getSubclasses().size());
+			// Test each class has it's proper subclass
+			assertEquals(subClassNames[i], tempClazz.getSubclasses().get(0)
+					.getClassName());
+
+			// FLIPPIN DOUBLES -> Testing double inheritance
+			tempClazz = tempClazz.getSubclasses().get(0);
+			// Test each class only has 1 subclass
+			assertEquals(1, tempClazz.getSubclasses().size());
+			// Test each class has it's proper subclass
+			assertEquals(PREFIX + subClassNames[i], tempClazz.getSubclasses()
+					.get(0).getClassName());
+
+		}
+	}
+
+	public Hashtable<String, Clazz> makeFileList() {
+		Hashtable<String, Clazz> classes = new Hashtable<String, Clazz>();
+
+		for (String name : classNames) {
+			classes.put(name, new Clazz(name));
+		}
+		return classes;
 	}
 }
