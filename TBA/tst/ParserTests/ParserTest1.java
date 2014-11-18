@@ -28,6 +28,8 @@ public class ParserTest1 {
 			"class4", "class5" };
 	public final String[] subClassNames = { "subclass1", "subclass2",
 			"subclass3", "subclass4", "subclass5" };
+	ArrayList<Clazz> subclasses;
+	Clazz superclass;
 
 	@Before
 	public void setUp() {
@@ -36,6 +38,7 @@ public class ParserTest1 {
 		mockReader = Mockito.mock(BufferedReader.class);
 		clazz = new Clazz(classNames[0]);
 		vTable = new VarTable();
+		subclasses = new ArrayList<Clazz>();
 	}
 
 	@Test
@@ -48,9 +51,28 @@ public class ParserTest1 {
 
 	@Test
 	public void testParseClass() {
-
+		
+		parser.setCurrentClassForTestOnly(clazz);
+		parser.getCurrentClassForTestOnly();
 		// TODO: TEST
 
+	}
+	
+	@Test
+	public void testparseClassDeclaration() {
+		
+		parser.setCurrentClassForTestOnly(clazz);
+		parser.getCurrentClassForTestOnly();
+		parser.setBufferedReaderForTestOnly(mockReader);
+		parser.getBufferedReaderForTestOnly();
+
+		Clazz superClazz = new Clazz(classNames[0]);
+		superClazz.SetClassName("OtherClass");
+		superClazz.addSubclass(clazz);
+		clazz = parser.getCurrentClassForTestOnly();
+		
+		assertEquals("OtherClass", clazz.getSuperClassNameForTestOnly());
+		
 	}
 
 	@Test
@@ -85,23 +107,36 @@ public class ParserTest1 {
 	}
 
 	@Test
-	public void testMethodOrVar() {
+	public void testMethodOrVarMethod() throws Exception {
 
+		String[] currLine = { "pubic", "void", "method()" };
+		
+		parser.setCurrentClassForTestOnly(clazz);
+		parser.setBufferedReaderForTestOnly(mockReader);
+		parser.methodOrVar(currLine, 2, vTable);
+		method = parser.getCurrentClassForTestOnly().getMethods().get(0);
+		assertEquals("method", method.methodName);
+
+	}
+	
+	@Test
+	public void testMethodOrVarVar() throws Exception {
+		
 		// TODO: TEST
-
+		
 	}
 
 	@Test
-	public void testParseClassDeclaration() {
+	public void testParseMethodSignature() throws Exception {
 
-		// TODO: TEST
-
-	}
-
-	@Test
-	public void testParseMethodSignature() {
-
-		// TODO: TEST
+		String[] currLine = { "public", "void", "method,", "i", "j" };
+		
+		parser.setCurrentClassForTestOnly(clazz);
+		parser.getCurrentClassForTestOnly();
+		parser.setBufferedReaderForTestOnly(mockReader);
+		parser.getBufferedReaderForTestOnly();
+		int num = parser.parseMethodSignature(currLine, 3);
+		assertEquals(2, num);
 
 	}
 
