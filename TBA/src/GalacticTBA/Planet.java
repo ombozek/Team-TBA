@@ -1,4 +1,6 @@
 package GalacticTBA;
+import java.awt.Color;
+
 import com.sun.j3d.utils.geometry.*;
 
 import javax.vecmath.*;
@@ -7,16 +9,19 @@ import javax.media.j3d.Appearance;
 import javax.media.j3d.BoundingSphere;
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.ColoringAttributes;
+import javax.media.j3d.Material;
 import javax.media.j3d.Node;
 import javax.media.j3d.RotationInterpolator;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
 public class Planet {
+	protected static final double ORBIT_SPEED_MODIFIER = 100; //Default 100
 	Sphere sphere;
 	
 	//Appearance Attributes
 	Appearance ap = new Appearance();
 	ColoringAttributes ca;
+	Material mat;
 	Color3f color;
 	float radius;
 	//Positioning attributes
@@ -40,10 +45,11 @@ public class Planet {
 		//Create Transform Group for just this object			
 			
 			this.tg_trans = translate(this.sphere,new Vector3f(this.orbit_radius,0,0));
-			this.tg_rot = rotate(this.tg_trans, new Alpha(-1,(long) (radius+orbit_radius)*100));
+			this.tg_rot = rotate(this.tg_trans, new Alpha(-1,(long) ((radius+orbit_radius)*ORBIT_SPEED_MODIFIER)));
 		//Apply Coloring Attributes
 			this.ca = new ColoringAttributes(color,ColoringAttributes.NICEST);
 			this.ap.setColoringAttributes(ca);
+			this.ap.setMaterial( new Material(color, new Color3f(Color.black), color, new Color3f(Color.black), 1.0f));
 			this.sphere.setAppearance(ap);
 	}
 	//Constructor to add to main branchgroup
@@ -53,25 +59,10 @@ public class Planet {
 	}
 	//Constructor to add to a parent transformgroup
 	public Planet(Vector3f axis, float radius,float orbit_radius, Color3f color, TransformGroup tg){
-		//Set Properties of sphere
-		this.setColor(color);
-		this.radius = radius/100;
-		this.axis = new Vector3f(0,0,1f);
-		this.orbit_radius = orbit_radius/50;
-	//Create Sphere Object
-		this.sphere = new Sphere(this.radius);
-
-	//Create Transform Group for just this object			
-		
-		this.tg_trans = translate(this.sphere,new Vector3f(this.orbit_radius,0,0));
-		this.tg_rot = rotate(this.tg_trans, new Alpha(-1,(long) (radius+orbit_radius)*1000));
-	//Apply Coloring Attributes
-		this.ca = new ColoringAttributes(color,ColoringAttributes.NICEST);
-		this.ap.setColoringAttributes(ca);
-		this.sphere.setAppearance(ap);
+		this(axis,radius,orbit_radius,color);
 		tg.addChild(this.tg_rot);
 	}
-	private void setColor(Color3f c) {
+	protected void setColor(Color3f c) {
 		this.color=c;
 	}
 	public double getRadius() {

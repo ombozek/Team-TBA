@@ -27,7 +27,7 @@ public class Universe {
 	   Color3f white = new Color3f(Color.WHITE);
 	   //Planet( Vector3f axis, float radius, float orbit_radius, Color3f color)
 	   Planet hole = new Planet(new Vector3f(0,0,1),(float) 0,0,yellow,viewgroup);
-	   Planet sun = new Planet(new Vector3f(0,0,1),(float) 50,300,yellow,hole.tg_trans);
+	   Planet sun = new Sun(new Vector3f(0,0,1),(float) 50,300,yellow,hole.tg_trans);
 	   
 	   
 	   Planet earth = new Planet(new Vector3f(0,0,1),(float) 10,100,blue,sun.tg_trans);
@@ -45,7 +45,7 @@ public class Universe {
 	   Planet moon2 = new Planet(new Vector3f(0,0,1),(float) 1,10,white,earth2.tg_trans);
 	   Planet mercury2 = new Planet(new Vector3f(0,0,1),(float) 5,50,red,sun2.tg_trans);
 	   Planet venus2 = new Planet(new Vector3f(0,0,1),(float) 7,60,blue,sun2.tg_trans);
-	   
+	   createAxis(hole.tg_trans);
 	   createAxis(sun.tg_trans);
 	   createAxis(sun2.tg_trans);
 	   
@@ -56,12 +56,12 @@ public class Universe {
 	   Vector3f light2Direction = new Vector3f(4.0f, 7.0f, 12.0f);
 	   DirectionalLight light2 = new DirectionalLight(light1Color, light2Direction);
 	   light2.setBoundsAutoCompute(true);
-	   maingroup.addChild(light2);
+	   //maingroup.addChild(light2);
 	   light1.setInfluencingBounds(bounds);
-	   maingroup.addChild(light1);
+	   //maingroup.addChild(light1);
 
 
-	   OrbitBehavior orbit = new OrbitBehavior(universe.getCanvas(), OrbitBehavior.REVERSE_ROTATE);
+	   OrbitBehavior orbit = new OrbitBehavior(universe.getCanvas(), OrbitBehavior.REVERSE_ALL);			   
 	   orbit.setSchedulingBounds(new BoundingSphere());
 	  MouseZoom myMouse = new MouseZoom();
 	  myMouse.setTransformGroup(viewgroup);
