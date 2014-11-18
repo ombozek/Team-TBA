@@ -33,7 +33,7 @@ public class Parser {
 		for (String file : files) {
 			try {
 				parseClass(new File(file));
-				classes.put(currentClazz.className, currentClazz);
+				classes.put(currentClazz.getClassName(), currentClazz);
 				currentClazz = null;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -55,9 +55,9 @@ public class Parser {
 	 *             I/O Exceptions
 	 */
 	public Clazz parseClass(File file) throws Exception {
-		Clazz clazz = new Clazz();
-		clazz.className = file.getName().substring(0,
+		String className = file.getName().substring(0,
 				file.getName().indexOf("."));
+		Clazz clazz = new Clazz(className);
 		currentClazz = clazz;
 
 		// Spin up readers
@@ -99,6 +99,8 @@ public class Parser {
 		// looks for a superclass by searching for "extends" in the 4th element
 		// in the class declaration
 		// public class <classname> extends <superclass>
+		if (currLine.length <= currIndex + 2)
+			return;
 		if (currLine[currIndex + 2].equals("extends")) {
 			currentClazz.superclassName = currLine[currIndex + 3];
 		}
@@ -281,9 +283,10 @@ public class Parser {
 		// If it's a method, parse it
 		if (currLine[currIndex].contains("(")) {
 			parseMethodBody(currLine, currIndex);
-		} else if (currLine[currIndex + 1].contains("(")) {
+		} else if (currLine.length > currIndex + 1
+				&& currLine[currIndex + 1].contains("(")) {
 			parseMethodBody(currLine, currIndex + 1);
-		} else if (currLine.length < currIndex + 2
+		} else if (currLine.length > currIndex + 2
 				&& currLine[currIndex + 2].contains("(")) {
 			parseMethodBody(currLine, currIndex + 2);
 		}
@@ -347,13 +350,13 @@ public class Parser {
 		for (Clazz clazz : clazzez.values()) {
 			if (clazz.superclassName != null) {
 				tempClazz = clazzez.get(clazz.superclassName);
-				
+
 				// In case we extend some external superclass
 				if (tempClazz == null)
 					continue;
-				
+
 				tempClazz.addSubclass(clazz);
-				classesToRemove.add(clazz.className);
+				classesToRemove.add(clazz.getClassName());
 			}
 		}
 

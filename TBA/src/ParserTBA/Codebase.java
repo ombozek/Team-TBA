@@ -27,15 +27,23 @@ public class Codebase {
 	}
 
 	public static class Clazz {
-		int numImports;
-		Clazz superclass;
-		String superclassName;
-		ArrayList<Clazz> subclasses;
-		ArrayList<Methodz> methods = new ArrayList<Methodz>();
-		String className;
+		public int numImports;
+		private Clazz superclass;
+		public String superclassName;
+		private ArrayList<Clazz> subclasses;
+		private ArrayList<Methodz> methods = new ArrayList<Methodz>();
+		private String className;
 
 		VarTable varTable = new VarTable();
-		
+
+		public Clazz(String className) {
+			this.className = className;
+		}
+
+		public String getClassName() {
+			return className;
+		}
+
 		public void addMethod(Methodz methodz) {
 			methods.add(methodz);
 		}
