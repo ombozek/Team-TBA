@@ -183,7 +183,7 @@ public class TBALogic {
 
 	// TODO make this work
 	private String getCodeRepo() throws Exception {
-		Object[] options = { "Github URI", "Local Git Repository" };
+		Object[] options = {"Local Git Repository", "Github URI" };
 
 		JFrame frame = new JFrame();
 		int selection = JOptionPane.showOptionDialog(frame,
@@ -191,7 +191,7 @@ public class TBALogic {
 				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
 				options, options[0]);
 
-		if (selection == 0) {
+		if (selection == 1) {
 			folderName = "cpsc410_" + new Date().getTime();
 			String baseDir = getCodeRoot(true);
 
@@ -219,6 +219,9 @@ public class TBALogic {
 			}
 			in.close();
 			return baseDir + "\\" + folderName;
+		}
+		else if(selection != 0) {
+			System.exit(0);
 		}
 
 		return getCodeRoot(false);

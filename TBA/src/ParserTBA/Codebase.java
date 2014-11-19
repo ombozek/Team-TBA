@@ -3,16 +3,26 @@ package ParserTBA;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+import GalacticTBA.ETConst.Range;
+
 public class Codebase {
 
 	public enum types {
 		INT, STRING, CHAR, DOUBLE, BOOLEAN, LIST, SET, ARRAY
 	}
 
-	Hashtable<String, Clazz> classes;
+	private final Hashtable<String, Clazz> classes;
+	private Range importRange;
+	private Range slocRange;
+	private Range paramRange;
+	private int[] rangeHolder;
 
 	public Codebase(Hashtable<String, Clazz> classes) {
 		this.classes = classes;
+	}
+
+	public Hashtable<String, Clazz> getClasses() {
+		return classes;
 	}
 
 	@Override
@@ -26,6 +36,48 @@ public class Codebase {
 		return builder.toString().substring(0, builder.length() - 2) + "]";
 	}
 
+	public void determineScales() {
+		rangeHolder = new int[6];
+		for (Clazz clazz : classes.values()) {
+			setMinMax(clazz.numImports, 0, 1);
+			setMinMax(clazz.getSloc(), 2, 3);
+			for (Methodz method : clazz.getMethods()) {
+				setMinMax(method.parameters, 4, 5);
+			}
+		}
+		importRange = new Range(rangeHolder[0], rangeHolder[1]);
+		slocRange = new Range(rangeHolder[2], rangeHolder[3]);
+		paramRange = new Range(rangeHolder[4], rangeHolder[5]);
+		rangeHolder = null;
+	}
+
+	public void setMinMax(int input, int min, int max) {
+		if (rangeHolder[min] < 0 || rangeHolder[max] < 0) {
+			rangeHolder[min] = input;
+			rangeHolder[max] = input;
+		}
+		if (input < rangeHolder[min])
+			rangeHolder[min] = input;
+		if (input > rangeHolder[max])
+			rangeHolder[max] = input;
+	}
+
+	public Range getParamRange() {
+		return paramRange;
+	}
+
+	public Range getSlocRange() {
+		return slocRange;
+	}
+
+	public Range getImportRange() {
+		return importRange;
+	}
+
+	// ----------
+	// Nested Class: Clazz
+	// ----------
+
 	public static class Clazz {
 		public int numImports;
 		private Clazz superclass;
@@ -33,6 +85,7 @@ public class Codebase {
 		private ArrayList<Clazz> subclasses;
 		private ArrayList<Methodz> methods = new ArrayList<Methodz>();
 		private String className;
+		private int sloc = 0;
 
 		VarTable varTable = new VarTable();
 
@@ -45,6 +98,7 @@ public class Codebase {
 		}
 
 		public void addMethod(Methodz methodz) {
+			sloc += methodz.sloc;
 			methods.add(methodz);
 		}
 
@@ -63,21 +117,15 @@ public class Codebase {
 		public ArrayList<Clazz> getSubclasses() {
 			return subclasses;
 		}
-		
-		// TEST METHODS ONLY
-		
-		public void SetClassName(String name)
-		{
-			className = name;
+
+		public int getSloc() {
+			return sloc;
 		}
-		
-		public String getSuperClassNameForTestOnly() {
-			if(superclass == null)
-				return "";
-			
-			return this.superclass.className;
+
+		public Clazz getSuperclass() {
+			return this.superclass;
 		}
-		
+
 		@Override
 		public String toString() {
 			StringBuilder builder = new StringBuilder();
@@ -111,6 +159,10 @@ public class Codebase {
 		}
 	}
 
+	// ----------
+	// Nested Class: Methodz
+	// ----------
+
 	public static class Methodz {
 		public int sloc = 0;
 		public int parameters = 0;
@@ -122,6 +174,10 @@ public class Codebase {
 					+ ", SLOC: " + sloc + "]";
 		}
 	}
+
+	// ----------
+	// Nested Class: VarTable
+	// ----------
 
 	public static class VarTable {
 
@@ -155,6 +211,6 @@ public class Codebase {
 
 			return builder.toString().substring(0, builder.length() - 2) + "]";
 		}
-		
+
 	}
 }

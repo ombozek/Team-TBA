@@ -67,11 +67,10 @@ public class ParserTest1 {
 		parser.getBufferedReaderForTestOnly();
 
 		Clazz superClazz = new Clazz(classNames[0]);
-		superClazz.SetClassName("OtherClass");
 		superClazz.addSubclass(clazz);
 		clazz = parser.getCurrentClassForTestOnly();
 		
-		assertEquals("OtherClass", clazz.getSuperClassNameForTestOnly());
+		assertEquals("OtherClass", clazz.superclassName);
 		
 	}
 
