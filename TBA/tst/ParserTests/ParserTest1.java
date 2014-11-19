@@ -52,8 +52,6 @@ public class ParserTest1 {
 	@Test
 	public void testParseClass() {
 		
-		parser.setCurrentClassForTestOnly(clazz);
-		parser.getCurrentClassForTestOnly();
 		// TODO: TEST
 
 	}
@@ -122,7 +120,12 @@ public class ParserTest1 {
 	@Test
 	public void testMethodOrVarVar() throws Exception {
 		
-		// TODO: TEST
+		String[] currLine = { "public", "int", "hello", "=", "1", ",", "static", "int", "a", ";" };
+		
+		parser.setCurrentClassForTestOnly(clazz);
+		parser.setBufferedReaderForTestOnly(mockReader);
+		parser.methodOrVar(currLine, 0, vTable);
+		assertEquals(2, vTable.getTable()[types.INT.ordinal()]);
 		
 	}
 
