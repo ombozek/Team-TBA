@@ -52,8 +52,6 @@ public class ParserTest1 {
 	@Test
 	public void testParseClass() {
 		
-		parser.setCurrentClassForTestOnly(clazz);
-		parser.getCurrentClassForTestOnly();
 		// TODO: TEST
 
 	}
@@ -122,20 +120,25 @@ public class ParserTest1 {
 	@Test
 	public void testMethodOrVarVar() throws Exception {
 		
-		// TODO: TEST
+		String[] currLine = { "public", "int", "hello", "=", "1", ",", "static", "int", "a", ";" };
+		
+		parser.setCurrentClassForTestOnly(clazz);
+		parser.setBufferedReaderForTestOnly(mockReader);
+		parser.methodOrVar(currLine, 0, vTable);
+		assertEquals(2, vTable.getTable()[types.INT.ordinal()]);
 		
 	}
 
 	@Test
 	public void testParseMethodSignature() throws Exception {
 
-		String[] currLine = { "public", "void", "method,", "i", "j" };
+		String[] currLine = { "public", "void", "method(","int", "i","boolean", "j)" };
 		
 		parser.setCurrentClassForTestOnly(clazz);
 		parser.getCurrentClassForTestOnly();
 		parser.setBufferedReaderForTestOnly(mockReader);
 		parser.getBufferedReaderForTestOnly();
-		int num = parser.parseMethodSignature(currLine, 3);
+		int num = parser.parseMethodSignature(currLine, 4);
 		assertEquals(2, num);
 
 	}
