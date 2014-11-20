@@ -5,15 +5,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
+import java.util.Hashtable;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
-import TBALogic.TBALogic.StupidContainer.LogOp;
-import TBALogic.TBALogic.StupidContainer.Ops;
 
 public class TBALogic {
 
@@ -24,8 +21,8 @@ public class TBALogic {
 	private final String GIT = ".git";
 	private final boolean isOSWindows;
 	private String gitDir;
-	private ArrayList<LogOp> logs;
 	String folderName;
+	Hashtable<String, Integer> commitCounts;
 
 	public TBALogic(boolean isOSWindows) {
 		this.isOSWindows = isOSWindows;
@@ -83,7 +80,7 @@ public class TBALogic {
 		if (gitDir == null)
 			return new StupidContainer(files, root);
 
-		logs = new ArrayList<LogOp>();
+		commitCounts = new Hashtable<String, Integer>();
 		Process p = null;
 
 		if (isOSWindows) {
@@ -96,20 +93,20 @@ public class TBALogic {
 		BufferedReader in = new BufferedReader(new InputStreamReader(
 				p.getInputStream()));
 
-		String line = null;
+		String line = null, name;
+		Integer count;
 		while ((line = in.readLine()) != null) {
 			if (line.contains(".java")) {
-				if (line.startsWith("A")) {
-					logs.add(new LogOp(Ops.ADD, extractName(line)));
-				} else {
-					logs.add(new LogOp(Ops.DELETE, extractName(line)));
-				}
+				name = extractName(line);
+				count = commitCounts.get(name);
+				if (count == null)
+					count = new Integer(0);
+				commitCounts.put(name, count + 1);
 			}
 		}
 
 		in.close();
-		Collections.reverse(logs);
-		return new StupidContainer(files, root, logs, folderName);
+		return new StupidContainer(files, root, folderName, commitCounts);
 	}
 
 	/**
@@ -125,7 +122,7 @@ public class TBALogic {
 			return line.substring(line.lastIndexOf("/") + 1, line.indexOf("."));
 		}
 		// Root dir case
-		return line.substring(1).trim();
+		return line.substring(1, line.indexOf(".")).trim();
 	}
 
 	/**
@@ -183,7 +180,7 @@ public class TBALogic {
 
 	// TODO make this work
 	private String getCodeRepo() throws Exception {
-		Object[] options = { "Github URI", "Local Git Repository" };
+		Object[] options = { "Local Git Repository", "Github URI" };
 
 		JFrame frame = new JFrame();
 		int selection = JOptionPane.showOptionDialog(frame,
@@ -191,7 +188,7 @@ public class TBALogic {
 				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
 				options, options[0]);
 
-		if (selection == 0) {
+		if (selection == 1) {
 			folderName = "cpsc410_" + new Date().getTime();
 			String baseDir = getCodeRoot(true);
 
@@ -219,6 +216,8 @@ public class TBALogic {
 			}
 			in.close();
 			return baseDir + "\\" + folderName;
+		} else if (selection != 0) {
+			System.exit(0);
 		}
 
 		return getCodeRoot(false);
@@ -268,46 +267,27 @@ public class TBALogic {
 	 */
 	public static class StupidContainer {
 		public final ArrayList<String> sourceFiles;
-		public final ArrayList<LogOp> gitLog;
 		public final String codeRoot;
 		public final String folderName;
-
-		public enum Ops {
-			ADD, DELETE
-		};
+		Hashtable<String, Integer> commitCounts;
 
 		public StupidContainer(ArrayList<String> files, String codeRoot) {
 			this.sourceFiles = files;
-			this.gitLog = null;
 			this.folderName = null;
 			this.codeRoot = codeRoot;
 		}
 
 		public StupidContainer(ArrayList<String> files, String codeRoot,
-				ArrayList<LogOp> logs, String folderName) {
+				String folderName, Hashtable<String, Integer> commitCounts) {
 			this.sourceFiles = files;
-			this.gitLog = logs;
 			this.folderName = folderName;
 			this.codeRoot = codeRoot;
+			this.commitCounts = commitCounts;
 		}
 
 		public boolean hasValidGitRepo() {
-			return gitLog != null;
+			return commitCounts != null;
 		}
 
-		public static class LogOp {
-			public final Ops op;
-			public final String fileName;
-
-			public LogOp(Ops op, String fileName) {
-				this.op = op;
-				this.fileName = fileName;
-			}
-
-			@Override
-			public String toString() {
-				return "Operation: " + op.toString() + " " + fileName;
-			}
-		}
 	}
 }
