@@ -193,7 +193,7 @@ public class Parser {
 	}
 
 	/**
-	 * Searches for and counts keywords from inputed line
+	 * Searches for and counts keywords from input line
 	 * 
 	 * @param currLine
 	 *            The tokenized version of the current line being parsed

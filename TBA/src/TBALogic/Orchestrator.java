@@ -27,11 +27,6 @@ public class Orchestrator {
 				System.exit(0);
 			}
 
-			for (String name : classFileInformation.commitCounts.keySet()) {
-				System.out.println(name + " :: "
-						+ classFileInformation.commitCounts.get(name));
-			}
-
 			// Parse the files
 			Codebase codebase = new Parser(classFileInformation.sourceFiles)
 					.parse();
@@ -42,10 +37,11 @@ public class Orchestrator {
 			// Send structure to output generator
 			Planetizer planetizer = new Planetizer(codebase);
 			planetizer.celestialize();
-			System.out.println(codebase.toString());
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			JFrame frame = new JFrame();
+			JOptionPane.showMessageDialog(frame, "An unrecoverable error occured, GalacticTBA Mission Aborted");
+			frame.dispose();
 			e.printStackTrace();
 			System.exit(0);
 		} finally {
@@ -65,10 +61,11 @@ public class Orchestrator {
 				"Would you like to delete the cloned Github Repository???",
 				"GalacticTBA", JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+		frame.dispose();
 
 		if (selection == 1)
 			return;
-		
+
 		try {
 			if (isOSWindows) {
 				String userDir = System.getProperty("user.dir");
@@ -81,7 +78,9 @@ public class Orchestrator {
 								+ parsingResults.folderName);
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			frame = new JFrame();
+			JOptionPane.showMessageDialog(frame, "There was an error deleting your repository");
+			frame.dispose();
 			e.printStackTrace();
 		}
 	}
