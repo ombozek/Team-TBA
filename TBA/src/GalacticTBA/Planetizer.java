@@ -12,6 +12,7 @@ import static GalacticTBA.ETConst.planetColors;
 import static GalacticTBA.ETConst.starColors;
 
 import java.awt.Color;
+import java.util.Random;
 
 import javax.media.j3d.BoundingSphere;
 import javax.media.j3d.BranchGroup;
@@ -41,7 +42,7 @@ public class Planetizer {
 	public final Codebase codebase;
 	public final Range importRange, paramRange, slocRange, commitRange;
 	public final int showAxes;
-
+	
 	public Planetizer(Codebase codebase) {
 		this.codebase = codebase;
 		importRange = codebase.getImportRange();
@@ -62,7 +63,7 @@ public class Planetizer {
 
 	public void celestialize() throws Exception {
 		SimpleUniverse universe = new SimpleUniverse();
-
+		
 		BranchGroup maingroup = new BranchGroup();
 		TransformGroup viewgroup = new TransformGroup();
 		maingroup.addChild(viewgroup);
@@ -76,19 +77,19 @@ public class Planetizer {
 		int w = INITIAL_STAR_DISTANCE;
 		for (Clazz clazz : codebase.getClasses().values()) {
 			w += STAR_SPACING;
-			p = new Sun(new Vector3f(0, 0, 1), starRadius(clazz.getSloc()), w,
+			
+			p = new Sun(new Vector3f(0, 0, 1), starRadius(clazz.getSloc()),clazz.getSloc()*2 + w ,
 					starColor(clazz.getNumCommits()), blackhole.tg_trans);
 
 			if (showAxes == 0)
 				createAxis(p.tg_trans);
 
 			planetize(clazz, p.tg_trans);
-			if (clazz.getSubclasses() != null
-					&& !clazz.getSubclasses().isEmpty())
+			if (clazz.getSubclasses() != null && !clazz.getSubclasses().isEmpty())
 				celestialize(clazz, p);
 		}
 
-		Color3f light1Color = new Color3f(1.8f, 0.1f, 0.1f);
+		/*Color3f light1Color = new Color3f(1.8f, 0.1f, 0.1f);
 		BoundingSphere bounds = new BoundingSphere(new Point3d(0.0, 0.0, 0.0),
 				500.0);
 		Vector3f light1Direction = new Vector3f(4.0f, -7.0f, 12.0f);
@@ -98,7 +99,7 @@ public class Planetizer {
 		DirectionalLight light2 = new DirectionalLight(light1Color,
 				light2Direction);
 		light2.setBoundsAutoCompute(true);
-		light1.setInfluencingBounds(bounds);
+		light1.setInfluencingBounds(bounds);*/
 
 		OrbitBehavior orbit = new OrbitBehavior(universe.getCanvas(),
 				OrbitBehavior.REVERSE_ALL);
@@ -115,10 +116,11 @@ public class Planetizer {
 
 	private void celestialize(Clazz superclazz, Planet p) {
 		int w = INITIAL_STAR_DISTANCE;
+		Random rg = new Random();
 		for (Clazz subclazz : superclazz.getSubclasses()) {
 			w += STAR_SPACING;
-			p = new Sun(new Vector3f(0, 0, 1), starRadius(subclazz.getSloc()),
-					w, starColor(subclazz.getNumCommits()), p.tg_trans);
+			p = new Sun(new Vector3f(rg.nextFloat(),rg.nextFloat(), (float) 1), starRadius(subclazz.getSloc()),
+					subclazz.getSloc()+w, starColor(subclazz.getNumCommits()), p.tg_trans);
 
 			if (showAxes == 0)
 				createAxis(p.tg_trans);
@@ -133,9 +135,11 @@ public class Planetizer {
 
 	public void planetize(Clazz clazz, TransformGroup trans) {
 		int w = INITIAL_PLANET_DISTANCE;
+		Random rg = new Random();
 		for (Methodz method : clazz.getMethods()) {
 			w += PLANET_SPACING;
-			new Planet(defaultAxis, planetRadius(method.sloc), w,
+			
+			new Planet(new Vector3f(rg.nextFloat(),rg.nextFloat(), rg.nextFloat()), planetRadius(method.sloc), method.sloc/2 +w,
 					planetColor(method.parameters), trans);
 		}
 	}

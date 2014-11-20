@@ -15,7 +15,7 @@ import javax.media.j3d.RotationInterpolator;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
 public class Planet {
-	protected static final double ORBIT_SPEED_MODIFIER = 100; //Default 100
+	protected static final double ORBIT_SPEED_MODIFIER = 250; //Default 500
 	Sphere sphere;
 	
 	//Appearance Attributes
@@ -27,6 +27,7 @@ public class Planet {
 	//Positioning attributes
 	Vector3f pos;
 	Vector3f axis;
+	TransformGroup tg_axis_rot;
 	TransformGroup tg_trans;
 	TransformGroup tg_rot;
 	float orbit_radius;
@@ -46,6 +47,7 @@ public class Planet {
 			
 			this.tg_trans = translate(this.sphere,new Vector3f(this.orbit_radius,0,0));
 			this.tg_rot = rotate(this.tg_trans, new Alpha(-1,(long) ((radius+orbit_radius)*ORBIT_SPEED_MODIFIER)));
+			this.tg_axis_rot = rotate(this.tg_rot, axis);
 		//Apply Coloring Attributes
 			this.ca = new ColoringAttributes(color,ColoringAttributes.NICEST);
 			this.ap.setColoringAttributes(ca);
@@ -59,12 +61,12 @@ public class Planet {
 	//Constructor to add to main branchgroup
 	public Planet(Vector3f axis, float radius, float orbit_radius, Color3f color,BranchGroup g){
 		this(axis,radius,orbit_radius,color);
-		g.addChild(this.tg_rot);
+		g.addChild(this.tg_axis_rot);
 	}
 	//Constructor to add to a parent transformgroup
 	public Planet(Vector3f axis, float radius,float orbit_radius, Color3f color, TransformGroup tg){
 		this(axis,radius,orbit_radius,color);
-		tg.addChild(this.tg_rot);
+		tg.addChild(this.tg_axis_rot);
 	}
 	protected void setColor(Color3f c) {
 		this.color=c;
@@ -97,6 +99,29 @@ public class Planet {
 
 	      //Populate the xform group.
 	      xformGroup.addChild(interpolator);
+	      xformGroup.addChild(node);
+
+	      return xformGroup;
+
+	    }//end rotate
+	TransformGroup rotate(Node node,Vector3f vector){
+
+	      TransformGroup xformGroup = new TransformGroup();
+	      xformGroup.setCapability(
+	                    TransformGroup.ALLOW_TRANSFORM_WRITE);
+
+	      Transform3D tx = new Transform3D();
+	      Transform3D ty = new Transform3D();
+	      Transform3D tz = new Transform3D();
+	      tx.rotX(vector.angle(new Vector3f(1,0,0)));
+	      ty.rotY(vector.angle(new Vector3f(0,1,0)));
+	      tz.rotZ(vector.angle(new Vector3f(0,0,1)));
+	      ty.mul(tz);
+	      tx.mul(ty);
+	      
+	      //Populate the xform group.
+	      /*xformGroup.addChild(t3d);*/
+	      xformGroup.setTransform(tx);
 	      xformGroup.addChild(node);
 
 	      return xformGroup;

@@ -21,6 +21,7 @@ public class Sun extends Planet {
 	PointLight light;
 	TransformGroup tg_trans_light;
 	TransformGroup tg_rot_light;
+	TransformGroup tg_axis_rot_light;
 	public Sun(Vector3f axis, float radius, float orbit_radius, Color3f color){
 		//Set Properties of sphere
 			//this.setColor(color);
@@ -37,6 +38,7 @@ public class Sun extends Planet {
 		//Create Transform Group for just this object			
 			this.tg_trans = translate(this.sphere,new Vector3f(this.orbit_radius,0,0));
 			this.tg_rot = rotate(this.tg_trans, new Alpha(-1,(long) ((radius+orbit_radius)*ORBIT_SPEED_MODIFIER)));
+			this.tg_axis_rot = rotate(this.tg_rot, axis);
 		//Apply Coloring Attributes
 			this.ca = new ColoringAttributes(color,ColoringAttributes.NICEST);
 			this.ap.setColoringAttributes(ca);
@@ -60,7 +62,8 @@ public class Sun extends Planet {
 			this.light.setInfluencingBounds(light_bounds);
 		    this.tg_trans_light = translate(this.light,new Vector3f(this.orbit_radius,0,0));
 			this.tg_rot_light = rotate(this.tg_trans_light, new Alpha(-1,(long) ((radius+orbit_radius)*ORBIT_SPEED_MODIFIER)));
-		    // this.tg_rot.addChild(light);*/
+			this.tg_axis_rot_light = rotate(this.tg_rot_light, axis);
+			// this.tg_rot.addChild(light);*/
 			
 			
 			
@@ -68,7 +71,7 @@ public class Sun extends Planet {
 	public Sun(Vector3f axis, float radius, int orbit_radius, Color3f color,
 			TransformGroup tg) {
 		this(axis,radius,orbit_radius,color);
-		tg.addChild(this.tg_rot);
-		tg.addChild(this.tg_rot_light);
+		tg.addChild(this.tg_axis_rot);
+		tg.addChild(this.tg_axis_rot_light);
 	}
 }

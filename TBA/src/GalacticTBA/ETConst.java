@@ -10,28 +10,45 @@ public class ETConst {
 	// Star color is determined by the number of imports
 	// Planet size is determined by the number of lines of code
 	// Planet color is determined by the number of parameters
-
+	public static final Color3f red = new Color3f(1.0f, 0.0f, 0.0f);
+    public static final Color3f green = new Color3f(0.0f, 1.0f, 0.0f);
+    public static final Color3f blue = new Color3f(0.0f, 0.0f, 1.0f);
+    public static final Color3f yellow = new Color3f(1.0f, 1.0f, 0.0f);
+    public static final Color3f cyan = new Color3f(0.0f, 1.0f, 1.0f);
+    public static final Color3f magenta = new Color3f(1.0f, 0.0f, 1.0f);
+    public static final Color3f white = new Color3f(1.0f, 1.0f, 1.0f);
+    public static final Color3f black = new Color3f(0.0f, 0.0f, 0.0f);
+    public static final Color3f grey = new Color3f(0.2f, 0.2f, 0.2f);
+    public static final Color3f darkred = new Color3f(0.2f, 0.0f, 0.0f);
+    public static final Color3f brown = new Color3f(0.35f, 0.29f, 0.0f);
+    public static final Color3f darkBrown = new Color3f(0.15f, 0.1f, 0.0f);
+    public final static Color3f darkGrey = new Color3f(0.2f, 0.2f, 0.2f);
+    public final static Color3f darkYellow = new Color3f(0.3f, 0.3f, 0.0f);
+    public final static Color3f darkGreen = new Color3f(0.0f, 0.3f, 0.0f);
+    public final static Color3f darkBlue = new Color3f(0.0f, 0.0f, 0.3f);
+	
+	
 	public static final Color3f[] starColors = { new Color3f(Color.RED),
 			new Color3f(Color.ORANGE), new Color3f(Color.YELLOW),
 			/*new Color3f(Color.BLUE),*/ new Color3f(Color.WHITE) };
 
 	public static final Color3f[] planetColors = {
-			new Color3f(Color.DARK_GRAY), new Color3f(Color.GRAY),
+			new Color3f(Color.RED), new Color3f(darkGrey),
 			new Color3f(Color.CYAN), new Color3f(Color.GREEN),
-			new Color3f(Color.BLUE), new Color3f(Color.LIGHT_GRAY) };
+			new Color3f(Color.BLUE), new Color3f(brown) };
 
 	public static final int STAR_SCALAR = 20;
-	public static final int INITIAL_STAR_DISTANCE = 25;
-	public static final int STAR_SPACING = 17;
+	public static final int INITIAL_STAR_DISTANCE = 10;
+	public static final int STAR_SPACING = 20;
 	
 	
-	public static final int MIN_PLANET_SIZE = 10;
-	public static final int PLANET_SCALAR = 20;
+	public static final int MIN_PLANET_SIZE = 20;
+	public static final int PLANET_SCALAR = 10;
 	public static final int INITIAL_PLANET_DISTANCE = 5;
-	public static final int PLANET_SPACING = 3;
+	public static final int PLANET_SPACING = 2;
 	
 
-	public static final Vector3f defaultAxis = new Vector3f(0, 0, 1);
+	public static final Vector3f defaultAxis = new Vector3f(0, 0, (float) 0.5);
 
 	public static class Range {
 		public final int MIN;
