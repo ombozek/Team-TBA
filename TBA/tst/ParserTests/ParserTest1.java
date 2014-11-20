@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import ParserTBA.Codebase;
 import ParserTBA.Codebase.Clazz;
 import ParserTBA.Codebase.Methodz;
 import ParserTBA.Codebase.VarTable;
@@ -149,16 +150,14 @@ public class ParserTest1 {
 	@Test
 	public void testOrganizeHierarchyNoInheritance() {
 		Hashtable<String, Clazz> classes = makeFileList();
-		Parser parser = new Parser(null);
-
-		parser.organizeHierarchy(classes);
+		Codebase codebase = new Codebase(classes);
+		codebase.organizeHierarchy();
 		assertEquals(classNames.length, classes.values().size());
 	}
 
 	@Test
 	public void testOrganizeHierarchySingleInheritance() {
 		Hashtable<String, Clazz> classes = makeFileList();
-		Parser parser = new Parser(null);
 
 		Clazz tempClazz;
 		for (int i = 0; i < subClassNames.length; i++) {
@@ -167,10 +166,11 @@ public class ParserTest1 {
 			tempClazz.superclassName = classNames[i];
 			classes.put(subClassNames[i], tempClazz);
 		}
+		Codebase codebase = new Codebase(classes);
 
 		assertEquals(classNames.length + subClassNames.length, classes.values()
 				.size());
-		parser.organizeHierarchy(classes);
+		codebase.organizeHierarchy();
 		assertEquals(classNames.length, classes.values().size());
 
 		for (int i = 0; i < classNames.length; i++) {
@@ -185,7 +185,6 @@ public class ParserTest1 {
 	@Test
 	public void testOrganizeHierarchyDoubleInheritance() {
 		Hashtable<String, Clazz> classes = makeFileList();
-		Parser parser = new Parser(null);
 		final String PREFIX = "DOUBLE";
 
 		Clazz tempClazz;
@@ -200,10 +199,10 @@ public class ParserTest1 {
 			tempClazz.superclassName = subClassNames[i];
 			classes.put(PREFIX + subClassNames[i], tempClazz);
 		}
-
+		Codebase codebase = new Codebase(classes);
 		assertEquals(classNames.length + subClassNames.length * 2, classes
 				.values().size());
-		parser.organizeHierarchy(classes);
+		codebase.organizeHierarchy();
 		assertEquals(classNames.length, classes.values().size());
 
 		for (int i = 0; i < classNames.length; i++) {

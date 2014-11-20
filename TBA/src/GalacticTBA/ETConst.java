@@ -20,7 +20,6 @@ public class ETConst {
 			new Color3f(Color.CYAN), new Color3f(Color.GREEN),
 			new Color3f(Color.BLUE), new Color3f(Color.LIGHT_GRAY) };
 
-	public static final int MIN_STAR_SIZE = 100;
 	public static final int STAR_SCALAR = 20;
 	public static final int INITIAL_STAR_DISTANCE = 25;
 	public static final int STAR_SPACING = 17;

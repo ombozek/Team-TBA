@@ -1,6 +1,15 @@
 package GalacticTBA;
 
-import static GalacticTBA.ETConst.*;
+import static GalacticTBA.ETConst.INITIAL_PLANET_DISTANCE;
+import static GalacticTBA.ETConst.INITIAL_STAR_DISTANCE;
+import static GalacticTBA.ETConst.MIN_PLANET_SIZE;
+import static GalacticTBA.ETConst.PLANET_SCALAR;
+import static GalacticTBA.ETConst.PLANET_SPACING;
+import static GalacticTBA.ETConst.STAR_SCALAR;
+import static GalacticTBA.ETConst.STAR_SPACING;
+import static GalacticTBA.ETConst.defaultAxis;
+import static GalacticTBA.ETConst.planetColors;
+import static GalacticTBA.ETConst.starColors;
 
 import java.awt.Color;
 
@@ -30,7 +39,7 @@ import com.sun.j3d.utils.universe.SimpleUniverse;
 
 public class Planetizer {
 	public final Codebase codebase;
-	public final Range importRange, paramRange, slocRange;
+	public final Range importRange, paramRange, slocRange, commitRange;
 	public final int showAxes;
 
 	public Planetizer(Codebase codebase) {
@@ -38,7 +47,8 @@ public class Planetizer {
 		importRange = codebase.getImportRange();
 		paramRange = codebase.getParamRange();
 		slocRange = codebase.getSlocRange();
-		
+		commitRange = codebase.getCommitRange();
+
 		Object[] options = { "Yes, show stellar axes",
 				"No, don't show stellar axes", "Only show central axis" };
 
@@ -62,7 +72,21 @@ public class Planetizer {
 		if (showAxes == 0 || showAxes == 2)
 			createAxis(blackhole.tg_trans);
 
+		Planet p;
+		int w = INITIAL_STAR_DISTANCE;
+		for (Clazz clazz : codebase.getClasses().values()) {
+			w += STAR_SPACING;
+			p = new Sun(new Vector3f(0, 0, 1), starRadius(clazz.getSloc()), w,
+					starColor(clazz.getNumCommits()), blackhole.tg_trans);
 
+			if (showAxes == 0)
+				createAxis(p.tg_trans);
+
+			planetize(clazz, p.tg_trans);
+			if (clazz.getSubclasses() != null
+					&& !clazz.getSubclasses().isEmpty())
+				celestialize(clazz, p);
+		}
 
 		Color3f light1Color = new Color3f(1.8f, 0.1f, 0.1f);
 		BoundingSphere bounds = new BoundingSphere(new Point3d(0.0, 0.0, 0.0),
@@ -86,23 +110,6 @@ public class Planetizer {
 
 		universe.getViewingPlatform().setViewPlatformBehavior(orbit);
 		universe.addBranchGraph(maingroup);
-		
-		Planet p;
-		int w = INITIAL_STAR_DISTANCE;
-		for (Clazz clazz : codebase.getClasses().values()) {
-			w += STAR_SPACING;
-			p = new Sun(new Vector3f(0, 0, 1), starRadius(clazz.getSloc()), w,
-					starColor(clazz.numImports), blackhole.tg_trans);
-
-			if (showAxes == 0)
-				createAxis(p.tg_trans);
-
-			planetize(clazz, p.tg_trans);
-			if (clazz.getSubclasses() != null
-					&& !clazz.getSubclasses().isEmpty())
-				celestialize(clazz, p);
-			Thread.sleep(1000);
-		}
 
 	}
 
@@ -111,11 +118,11 @@ public class Planetizer {
 		for (Clazz subclazz : superclazz.getSubclasses()) {
 			w += STAR_SPACING;
 			p = new Sun(new Vector3f(0, 0, 1), starRadius(subclazz.getSloc()),
-					w, starColor(subclazz.numImports), p.tg_trans);
-			
+					w, starColor(subclazz.getNumCommits()), p.tg_trans);
+
 			if (showAxes == 0)
 				createAxis(p.tg_trans);
-			
+
 			planetize(subclazz, p.tg_trans);
 			if (subclazz.getSubclasses() != null
 					&& !subclazz.getSubclasses().isEmpty())
@@ -139,9 +146,9 @@ public class Planetizer {
 						.getRange());
 	}
 
-	public Color3f starColor(int imports) {
-		double idx = (imports - importRange.MIN)
-				/ (double) (importRange.getRange() + 1);
+	public Color3f starColor(int commits) {
+		double idx = (commits - commitRange.MIN)
+				/ (double) (commitRange.getRange() + 1);
 		return starColors[(int) (idx * (starColors.length - 1))];
 	}
 

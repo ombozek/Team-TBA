@@ -15,6 +15,7 @@ public class Codebase {
 	private Range importRange;
 	private Range slocRange;
 	private Range paramRange;
+	private Range commitRange;
 	private int[] rangeHolder;
 
 	public Codebase(Hashtable<String, Clazz> classes) {
@@ -36,18 +37,25 @@ public class Codebase {
 		return builder.toString().substring(0, builder.length() - 2) + "]";
 	}
 
-	public void determineScales() {
-		rangeHolder = new int[6];
+	public void determineScales(Hashtable<String, Integer> commitCounts) {
+		rangeHolder = new int[8];
+		Integer commitCount;
 		for (Clazz clazz : classes.values()) {
 			setMinMax(clazz.numImports, 0, 1);
 			setMinMax(clazz.getSloc(), 2, 3);
 			for (Methodz method : clazz.getMethods()) {
 				setMinMax(method.parameters, 4, 5);
 			}
+			commitCount = commitCounts.get(clazz.className);
+			if (commitCount == null)
+				commitCount = new Integer(1);
+			clazz.setNumCommits(commitCount);
+			setMinMax(commitCount, 6, 7);
 		}
 		importRange = new Range(rangeHolder[0], rangeHolder[1]);
 		slocRange = new Range(rangeHolder[2], rangeHolder[3]);
 		paramRange = new Range(rangeHolder[4], rangeHolder[5]);
+		commitRange = new Range(rangeHolder[6], rangeHolder[7]);
 		rangeHolder = null;
 	}
 
@@ -74,6 +82,38 @@ public class Codebase {
 		return importRange;
 	}
 
+	public Range getCommitRange() {
+		return commitRange;
+	}
+
+	/**
+	 * Goes through every element and if applicable adds subclasses to their
+	 * parent class
+	 * 
+	 * @param clazzez
+	 *            the HashTable of all of the encountered classes
+	 */
+	public void organizeHierarchy() {
+		Clazz tempClazz;
+		ArrayList<String> classesToRemove = new ArrayList<String>();
+		for (Clazz clazz : classes.values()) {
+			if (clazz.superclassName != null) {
+				tempClazz = classes.get(clazz.superclassName);
+
+				// In case we extend some external superclass
+				if (tempClazz == null)
+					continue;
+
+				tempClazz.addSubclass(clazz);
+				classesToRemove.add(clazz.getClassName());
+			}
+		}
+
+		for (String clazzName : classesToRemove) {
+			classes.remove(clazzName);
+		}
+	}
+
 	// ----------
 	// Nested Class: Clazz
 	// ----------
@@ -86,6 +126,7 @@ public class Codebase {
 		private ArrayList<Methodz> methods = new ArrayList<Methodz>();
 		private String className;
 		private int sloc = 0;
+		private int numCommits;
 
 		VarTable varTable = new VarTable();
 
@@ -124,6 +165,14 @@ public class Codebase {
 
 		public Clazz getSuperclass() {
 			return this.superclass;
+		}
+
+		public int getNumCommits() {
+			return numCommits;
+		}
+
+		public void setNumCommits(int numCommits) {
+			this.numCommits = numCommits;
 		}
 
 		@Override

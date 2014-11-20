@@ -12,13 +12,11 @@ public class Orchestrator {
 	public static final int maxFiles = 30;
 	public static final int minFiles = 5;
 	private static boolean isOSWindows;
-	private static String userDir;
 
 	public static void main(String[] args) {
 		// Generate a list of files to parse
 		StupidContainer classFileInformation = null;
 		try {
-			userDir = System.getProperty("user.dir");
 
 			isOSWindows = System.getProperty("os.name").toLowerCase()
 					.contains("windows");
@@ -29,11 +27,17 @@ public class Orchestrator {
 				System.exit(0);
 			}
 
+			for (String name : classFileInformation.commitCounts.keySet()) {
+				System.out.println(name + " :: "
+						+ classFileInformation.commitCounts.get(name));
+			}
+
 			// Parse the files
 			Codebase codebase = new Parser(classFileInformation.sourceFiles)
 					.parse();
 			// Calculate numbers for visual output
-			codebase.determineScales();
+			codebase.determineScales(classFileInformation.commitCounts);
+			codebase.organizeHierarchy();
 
 			// Send structure to output generator
 			Planetizer planetizer = new Planetizer(codebase);
@@ -64,22 +68,21 @@ public class Orchestrator {
 
 		if (selection == 1)
 			return;
-
 		
-		System.out.println("I WOULD'VE FUCKED UP YOUR SHIT HOMIE");
-		// try {
-		// if (isOSWindows) {
-		// Runtime.getRuntime().exec(
-		// "cmd /C " + userDir + "\\scripts\\cleanup.sh "
-		// + parsingResults.codeRoot + "/");
-		// } else {
-		// Runtime.getRuntime().exec(
-		// "./scripts/cleanup.sh " + parsingResults.codeRoot + "/"
-		// + parsingResults.folderName);
-		// }
-		// } catch (IOException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
+		try {
+			if (isOSWindows) {
+				String userDir = System.getProperty("user.dir");
+				Runtime.getRuntime().exec(
+						"cmd /C " + userDir + "\\scripts\\cleanup.sh "
+								+ parsingResults.codeRoot + "/");
+			} else {
+				Runtime.getRuntime().exec(
+						"./scripts/cleanup.sh " + parsingResults.codeRoot + "/"
+								+ parsingResults.folderName);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
