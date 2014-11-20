@@ -3,16 +3,27 @@ package ParserTBA;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+import GalacticTBA.ETConst.Range;
+
 public class Codebase {
 
 	public enum types {
 		INT, STRING, CHAR, DOUBLE, BOOLEAN, LIST, SET, ARRAY
 	}
 
-	Hashtable<String, Clazz> classes;
+	private final Hashtable<String, Clazz> classes;
+	private Range importRange;
+	private Range slocRange;
+	private Range paramRange;
+	private Range commitRange;
+	private int[] rangeHolder;
 
 	public Codebase(Hashtable<String, Clazz> classes) {
 		this.classes = classes;
+	}
+
+	public Hashtable<String, Clazz> getClasses() {
+		return classes;
 	}
 
 	@Override
@@ -26,6 +37,87 @@ public class Codebase {
 		return builder.toString().substring(0, builder.length() - 2) + "]";
 	}
 
+	public void determineScales(Hashtable<String, Integer> commitCounts) {
+		rangeHolder = new int[8];
+		Integer commitCount;
+		for (Clazz clazz : classes.values()) {
+			setMinMax(clazz.numImports, 0, 1);
+			setMinMax(clazz.getSloc(), 2, 3);
+			for (Methodz method : clazz.getMethods()) {
+				setMinMax(method.parameters, 4, 5);
+			}
+			commitCount = commitCounts.get(clazz.className);
+			if (commitCount == null)
+				commitCount = new Integer(1);
+			clazz.setNumCommits(commitCount);
+			setMinMax(commitCount, 6, 7);
+		}
+		importRange = new Range(rangeHolder[0], rangeHolder[1]);
+		slocRange = new Range(rangeHolder[2], rangeHolder[3]);
+		paramRange = new Range(rangeHolder[4], rangeHolder[5]);
+		commitRange = new Range(rangeHolder[6], rangeHolder[7]);
+		rangeHolder = null;
+	}
+
+	public void setMinMax(int input, int min, int max) {
+		if (rangeHolder[min] < 0 || rangeHolder[max] < 0) {
+			rangeHolder[min] = input;
+			rangeHolder[max] = input;
+		}
+		if (input < rangeHolder[min])
+			rangeHolder[min] = input;
+		if (input > rangeHolder[max])
+			rangeHolder[max] = input;
+	}
+
+	public Range getParamRange() {
+		return paramRange;
+	}
+
+	public Range getSlocRange() {
+		return slocRange;
+	}
+
+	public Range getImportRange() {
+		return importRange;
+	}
+
+	public Range getCommitRange() {
+		return commitRange;
+	}
+
+	/**
+	 * Goes through every element and if applicable adds subclasses to their
+	 * parent class
+	 * 
+	 * @param clazzez
+	 *            the HashTable of all of the encountered classes
+	 */
+	public void organizeHierarchy() {
+		Clazz tempClazz;
+		ArrayList<String> classesToRemove = new ArrayList<String>();
+		for (Clazz clazz : classes.values()) {
+			if (clazz.superclassName != null) {
+				tempClazz = classes.get(clazz.superclassName);
+
+				// In case we extend some external superclass
+				if (tempClazz == null)
+					continue;
+
+				tempClazz.addSubclass(clazz);
+				classesToRemove.add(clazz.getClassName());
+			}
+		}
+
+		for (String clazzName : classesToRemove) {
+			classes.remove(clazzName);
+		}
+	}
+
+	// ----------
+	// Nested Class: Clazz
+	// ----------
+
 	public static class Clazz {
 		public int numImports;
 		private Clazz superclass;
@@ -33,6 +125,8 @@ public class Codebase {
 		private ArrayList<Clazz> subclasses;
 		private ArrayList<Methodz> methods = new ArrayList<Methodz>();
 		private String className;
+		private int sloc = 0;
+		private int numCommits;
 
 		VarTable varTable = new VarTable();
 
@@ -45,6 +139,7 @@ public class Codebase {
 		}
 
 		public void addMethod(Methodz methodz) {
+			sloc += methodz.sloc;
 			methods.add(methodz);
 		}
 
@@ -63,21 +158,23 @@ public class Codebase {
 		public ArrayList<Clazz> getSubclasses() {
 			return subclasses;
 		}
-		
-		// TEST METHODS ONLY
-		
-		public void SetClassName(String name)
-		{
-			className = name;
+
+		public int getSloc() {
+			return sloc;
 		}
-		
-		public String getSuperClassNameForTestOnly() {
-			if(superclass == null)
-				return "";
-			
-			return this.superclass.className;
+
+		public Clazz getSuperclass() {
+			return this.superclass;
 		}
-		
+
+		public int getNumCommits() {
+			return numCommits;
+		}
+
+		public void setNumCommits(int numCommits) {
+			this.numCommits = numCommits;
+		}
+
 		@Override
 		public String toString() {
 			StringBuilder builder = new StringBuilder();
@@ -111,6 +208,10 @@ public class Codebase {
 		}
 	}
 
+	// ----------
+	// Nested Class: Methodz
+	// ----------
+
 	public static class Methodz {
 		public int sloc = 0;
 		public int parameters = 0;
@@ -122,6 +223,10 @@ public class Codebase {
 					+ ", SLOC: " + sloc + "]";
 		}
 	}
+
+	// ----------
+	// Nested Class: VarTable
+	// ----------
 
 	public static class VarTable {
 
@@ -155,6 +260,6 @@ public class Codebase {
 
 			return builder.toString().substring(0, builder.length() - 2) + "]";
 		}
-		
+
 	}
 }

@@ -40,8 +40,6 @@ public class Parser {
 			}
 		}
 
-		organizeHierarchy(classes);
-
 		return new Codebase(classes);
 	}
 
@@ -335,34 +333,6 @@ public class Parser {
 
 		return countDeclaredVariables(line.trim().split(" "), 0) + commaCount
 				- 1;
-	}
-
-	/**
-	 * Goes through every element and if applicable adds subclasses to their
-	 * parent class
-	 * 
-	 * @param clazzez
-	 *            the HashTable of all of the encountered classes
-	 */
-	public void organizeHierarchy(Hashtable<String, Clazz> clazzez) {
-		Clazz tempClazz;
-		ArrayList<String> classesToRemove = new ArrayList<String>();
-		for (Clazz clazz : clazzez.values()) {
-			if (clazz.superclassName != null) {
-				tempClazz = clazzez.get(clazz.superclassName);
-
-				// In case we extend some external superclass
-				if (tempClazz == null)
-					continue;
-
-				tempClazz.addSubclass(clazz);
-				classesToRemove.add(clazz.getClassName());
-			}
-		}
-
-		for (String clazzName : classesToRemove) {
-			clazzez.remove(clazzName);
-		}
 	}
 
 	// ------------------

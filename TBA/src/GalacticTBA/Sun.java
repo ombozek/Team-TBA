@@ -51,7 +51,7 @@ public class Sun extends Planet {
 			this.light_bounds = new BoundingSphere(new Point3d(0,0,0),100.0); 
 			this.light = new PointLight();
 			this. light.setEnable(true);
-			this.light.setColor(color);
+			this.light.setColor(new Color3f(Color.WHITE));
 		    //light.setPosition(new Point3f(position.getX(),position.getY(),position.getZ()));
 			this.light.setCapability(PointLight.ALLOW_STATE_WRITE);
 			this. light.setCapability(PointLight.ALLOW_COLOR_WRITE);
