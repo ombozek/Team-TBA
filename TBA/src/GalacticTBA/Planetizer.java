@@ -52,6 +52,11 @@ public class Planetizer {
 
 	}
 
+	/**
+	 * Makes the base level stars that surround the blackhole
+	 * 
+	 * @throws Exception
+	 */
 	public void celestialize() throws Exception {
 		SimpleUniverse universe = new SimpleUniverse();
 		universe.getViewer().getView().setBackClipDistance(10000);
@@ -105,6 +110,15 @@ public class Planetizer {
 
 	}
 
+	/**
+	 * Creates subclass stars dubbed ("substars") which will orbit their
+	 * superclass'star (dubbed "superstars")
+	 * 
+	 * @param superclazz
+	 *            the superclass of this subclass
+	 * @param p
+	 *            the superstar which this substar will orbit
+	 */
 	private void celestialize(Clazz superclazz, Planet p) {
 		int w = INITIAL_STAR_DISTANCE;
 		Random rg = new Random();
@@ -121,9 +135,17 @@ public class Planetizer {
 					&& !subclazz.getSubclasses().isEmpty())
 				celestialize(subclazz, p);
 		}
-
 	}
 
+	/**
+	 * Creates planets that orbit stars that represent methods
+	 * 
+	 * @param clazz
+	 *            the class that contains the methods from which to create
+	 *            planets
+	 * @param trans
+	 *            the TransformationGroup of the owning star
+	 */
 	public void planetize(Clazz clazz, TransformGroup trans) {
 		int w = INITIAL_PLANET_DISTANCE;
 		Random rg = new Random();
@@ -135,12 +157,29 @@ public class Planetizer {
 		}
 	}
 
+	/**
+	 * Calculates the size of the star given by the number of lines of code in
+	 * the file
+	 * 
+	 * @param sloc
+	 *            the source lines of code in the java file
+	 * @return the size of the radius of the star
+	 */
 	public float starRadius(int sloc) {
 		return STAR_SCALAR
 				* ((float) (sloc - slocRange.MIN) / (float) slocRange
 						.getRange());
 	}
 
+	/**
+	 * Generates star color based on number of commits. The color is on a scale
+	 * from red to yellow. Redder stars have fewer commits and yellower stars
+	 * have more commits
+	 * 
+	 * @param commits
+	 *            the number of commits for this given java file
+	 * @return the generated color (from red to yellow)
+	 */
 	public Color3f starColor(int commits) {
 		double idx = (commits - commitRange.MIN)
 				/ (double) (commitRange.getRange() + 1);
@@ -148,22 +187,39 @@ public class Planetizer {
 				(int) ((STAR_G_RANGE * idx) + STAR_G_BASE), STAR_B, A));
 	}
 
+	/**
+	 * Calculates the size of a planet based on the number of lines of code in
+	 * the method it represents
+	 * 
+	 * @param sloc
+	 *            the source lines of code in the method
+	 * @return the size of the radius of the planet
+	 */
 	public float planetRadius(int sloc) {
 		return PLANET_SCALAR
 				* ((float) (sloc + MIN_PLANET_SIZE) / (float) slocRange
 						.getRange());
 	}
 
+	/**
+	 * Generates planet color based on the number of parameters defined in the
+	 * method signature. The color is on a scale of blue to green. Methods with
+	 * fewer parameters are bluer and with more parameters are greener.
+	 * 
+	 * @param numParam
+	 *            the number of parameters for the method
+	 * @return the generated color (from blue to green)
+	 */
 	public Color3f planetColor(int numParam) {
 		double idx = (numParam - paramRange.MIN)
 				/ (double) (paramRange.getRange() + 1);
 		if (idx < 0.5) {
-			// This means we max out Blue and scale Green
+			// This means we max out Blue and scale up Green
 			return new Color3f(new Color(PLANET_R,
 					(int) (PLANET_G_BASE + (idx * PLANET_G_RANGE)),
 					PLANET_B_BASE, A));
 		} else {
-			// This means we max out Green and scale blue
+			// This means we max out Green and scale down Blue
 			return new Color3f(new Color(PLANET_R, PLANET_G_RANGE,
 					(int) (PLANET_B_BASE - (idx * PLANET_B_RANGE)), A));
 		}

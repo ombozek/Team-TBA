@@ -10,6 +10,7 @@ public class ETConst {
 	// Star color is determined by the number of imports
 	// Planet size is determined by the number of lines of code
 	// Planet color is determined by the number of parameters
+
 	public static final Color3f red = new Color3f(1.0f, 0.0f, 0.0f);
     public static final Color3f green = new Color3f(0.0f, 1.0f, 0.0f);
     public static final Color3f blue = new Color3f(0.0f, 0.0f, 1.0f);
@@ -26,16 +27,6 @@ public class ETConst {
     public final static Color3f darkYellow = new Color3f(0.3f, 0.3f, 0.0f);
     public final static Color3f darkGreen = new Color3f(0.0f, 0.3f, 0.0f);
     public final static Color3f darkBlue = new Color3f(0.0f, 0.0f, 0.3f);
-	
-	
-	public static final Color3f[] starColors = { new Color3f(Color.RED),
-			new Color3f(Color.ORANGE), new Color3f(Color.YELLOW),
-			/*new Color3f(Color.BLUE),*/ new Color3f(Color.WHITE) };
-
-	public static final Color3f[] planetColors = {
-			new Color3f(Color.RED), new Color3f(darkGrey),
-			new Color3f(Color.CYAN), new Color3f(Color.GREEN),
-			new Color3f(Color.BLUE), new Color3f(brown) };
 
 	public static final int STAR_SCALAR = 20;
 	public static final int INITIAL_STAR_DISTANCE = 10;
@@ -50,15 +41,15 @@ public class ETConst {
 	// Used for sliding color for suns
 	public static final int STAR_R = 255;
 	public static final int STAR_B = 100;
-	public static final int STAR_G_RANGE = 200;
-	public static final int STAR_G_BASE = 50;
-	public static final int A = 100;
+	public static final int STAR_G_RANGE = 255;
+	public static final int STAR_G_BASE = 0;
+	public static final int A = 255;
 	
 	// Used for sliding color for stars
 	public static final int PLANET_R = 0;
-	public static final int PLANET_B_RANGE = 247;
-	public static final int PLANET_B_BASE = 247;
-	public static final int PLANET_G_RANGE = 247;
+	public static final int PLANET_B_RANGE = 200;
+	public static final int PLANET_B_BASE = 255;
+	public static final int PLANET_G_RANGE = 255;
 	public static final int PLANET_G_BASE = 0;
 
 	public static final Vector3f defaultAxis = new Vector3f(0, 0, (float) 0.5);
