@@ -54,7 +54,7 @@ public class Planetizer {
 
 	public void celestialize() throws Exception {
 		SimpleUniverse universe = new SimpleUniverse();
-		
+		universe.getViewer().getView().setBackClipDistance(10000);
 		BranchGroup maingroup = new BranchGroup();
 		TransformGroup viewgroup = new TransformGroup();
 		maingroup.addChild(viewgroup);
