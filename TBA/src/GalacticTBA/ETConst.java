@@ -30,6 +30,23 @@ public class ETConst {
 	public static final int INITIAL_PLANET_DISTANCE = 5;
 	public static final int PLANET_SPACING = 3;
 	
+	// Used for sliding color for suns
+	public static final int STAR_R = 255;
+	public static final int STAR_B = 100;
+	public static final int STAR_G_RANGE = 200;
+	public static final int STAR_G_BASE = 50;
+	public static final int A = 100;
+	
+	// Used for sliding color for stars
+	public static final int PLANET_R = 0;
+	public static final int PLANET_B_RANGE = 247;
+	public static final int PLANET_B_BASE = 247;
+	public static final int PLANET_G_RANGE = 247;
+	public static final int PLANET_G_BASE = 0;
+	
+	   Color3f yellow = new Color3f(new Color(242, 255, 100, 100));
+	   Color3f white = new Color3f(new Color(242, 55, 100, 0));
+	
 
 	public static final Vector3f defaultAxis = new Vector3f(0, 0, 1);
 
