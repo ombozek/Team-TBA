@@ -43,10 +43,6 @@ public class ETConst {
 	public static final int PLANET_B_BASE = 247;
 	public static final int PLANET_G_RANGE = 247;
 	public static final int PLANET_G_BASE = 0;
-	
-	   Color3f yellow = new Color3f(new Color(242, 255, 100, 100));
-	   Color3f white = new Color3f(new Color(242, 55, 100, 0));
-	
 
 	public static final Vector3f defaultAxis = new Vector3f(0, 0, 1);
 
