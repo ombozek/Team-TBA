@@ -70,7 +70,7 @@ public class Planetizer {
 		Planet blackhole = new Planet(new Vector3f(0, 0, 1), (float) 0, 0,
 				new Color3f(Color.YELLOW), viewgroup);
 		if (showAxes == 0 || showAxes == 2)
-			createAxis(blackhole.tg_trans);
+			createAxis(blackhole.tg_trans, false);
 
 		Planet p;
 		int w = INITIAL_STAR_DISTANCE;
@@ -80,7 +80,7 @@ public class Planetizer {
 					starColor(clazz.getNumCommits()), blackhole.tg_trans);
 
 			if (showAxes == 0)
-				createAxis(p.tg_trans);
+				createAxis(p.tg_trans, true);
 
 			planetize(clazz, p.tg_trans);
 			if (clazz.getSubclasses() != null
@@ -121,7 +121,7 @@ public class Planetizer {
 					w, starColor(subclazz.getNumCommits()), p.tg_trans);
 
 			if (showAxes == 0)
-				createAxis(p.tg_trans);
+				createAxis(p.tg_trans, true);
 
 			planetize(subclazz, p.tg_trans);
 			if (subclazz.getSubclasses() != null
@@ -173,29 +173,34 @@ public class Planetizer {
 		return move;
 	}
 
-	public void createAxis(TransformGroup tg) {
-
+	public void createAxis(TransformGroup tg, boolean smallAxes) {
+		float axisLength;
+		if (smallAxes) {
+			axisLength = 0.5f;
+		} else {
+			axisLength = 10f;
+		}
 		// Create X axis
 		LineArray axisXLines = new LineArray(2, LineArray.COORDINATES);
 		tg.addChild(new Shape3D(axisXLines));
 
-		axisXLines.setCoordinate(0, new Point3f(-10.0f, 0.0f, 0.0f));
-		axisXLines.setCoordinate(1, new Point3f(10.0f, 0.0f, 0.0f));
+		axisXLines.setCoordinate(0, new Point3f(-1*axisLength, 0.0f, 0.0f));
+		axisXLines.setCoordinate(1, new Point3f(axisLength, 0.0f, 0.0f));
 
 		// Create Y axis
 		LineArray axisYLines = new LineArray(2, LineArray.COORDINATES);
 		tg.addChild(new Shape3D(axisYLines));
 
-		axisYLines.setCoordinate(0, new Point3f(0.0f, -10.0f, 0.0f));
-		axisYLines.setCoordinate(1, new Point3f(0.0f, 10.0f, 0.0f));
+		axisYLines.setCoordinate(0, new Point3f(0.0f, -1*axisLength, 0.0f));
+		axisYLines.setCoordinate(1, new Point3f(0.0f, axisLength, 0.0f));
 
 		// Create Z axis with arrow
 
 		LineArray axisZLines = new LineArray(2, LineArray.COORDINATES);
 		tg.addChild(new Shape3D(axisZLines));
 
-		axisZLines.setCoordinate(0, new Point3f(0.0f, 0.0f, 10.0f));
-		axisZLines.setCoordinate(1, new Point3f(0.0f, 0.0f, -10.0f));
+		axisZLines.setCoordinate(0, new Point3f(0.0f, 0.0f, axisLength));
+		axisZLines.setCoordinate(1, new Point3f(0.0f, 0.0f, -1*axisLength));
 
 	}
 
