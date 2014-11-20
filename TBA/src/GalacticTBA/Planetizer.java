@@ -1,15 +1,6 @@
 package GalacticTBA;
 
-import static GalacticTBA.ETConst.INITIAL_PLANET_DISTANCE;
-import static GalacticTBA.ETConst.INITIAL_STAR_DISTANCE;
-import static GalacticTBA.ETConst.MIN_PLANET_SIZE;
-import static GalacticTBA.ETConst.PLANET_SCALAR;
-import static GalacticTBA.ETConst.PLANET_SPACING;
-import static GalacticTBA.ETConst.STAR_SCALAR;
-import static GalacticTBA.ETConst.STAR_SPACING;
-import static GalacticTBA.ETConst.defaultAxis;
-import static GalacticTBA.ETConst.planetColors;
-import static GalacticTBA.ETConst.starColors;
+import static GalacticTBA.ETConst.*;
 
 import java.awt.Color;
 import java.util.Random;
@@ -71,7 +62,7 @@ public class Planetizer {
 		Planet blackhole = new Planet(new Vector3f(0, 0, 1), (float) 0, 0,
 				new Color3f(Color.YELLOW), viewgroup);
 		if (showAxes == 0 || showAxes == 2)
-			createAxis(blackhole.tg_trans);
+			createAxis(blackhole.tg_trans, false);
 
 		Planet p;
 		int w = INITIAL_STAR_DISTANCE;
@@ -82,7 +73,7 @@ public class Planetizer {
 					starColor(clazz.getNumCommits()), blackhole.tg_trans);
 
 			if (showAxes == 0)
-				createAxis(p.tg_trans);
+				createAxis(p.tg_trans, true);
 
 			planetize(clazz, p.tg_trans);
 			if (clazz.getSubclasses() != null && !clazz.getSubclasses().isEmpty())
@@ -123,7 +114,7 @@ public class Planetizer {
 					subclazz.getSloc()+w, starColor(subclazz.getNumCommits()), p.tg_trans);
 
 			if (showAxes == 0)
-				createAxis(p.tg_trans);
+				createAxis(p.tg_trans, true);
 
 			planetize(subclazz, p.tg_trans);
 			if (subclazz.getSubclasses() != null
@@ -153,7 +144,8 @@ public class Planetizer {
 	public Color3f starColor(int commits) {
 		double idx = (commits - commitRange.MIN)
 				/ (double) (commitRange.getRange() + 1);
-		return starColors[(int) (idx * (starColors.length - 1))];
+		return new Color3f(new Color(STAR_R,
+				(int) ((STAR_G_RANGE * idx) + STAR_G_BASE), STAR_B, A));
 	}
 
 	public float planetRadius(int sloc) {
@@ -165,7 +157,16 @@ public class Planetizer {
 	public Color3f planetColor(int numParam) {
 		double idx = (numParam - paramRange.MIN)
 				/ (double) (paramRange.getRange() + 1);
-		return planetColors[(int) (idx * (planetColors.length - 1))];
+		if (idx < 0.5) {
+			// This means we max out Blue and scale Green
+			return new Color3f(new Color(PLANET_R,
+					(int) (PLANET_G_BASE + (idx * PLANET_G_RANGE)),
+					PLANET_B_BASE, A));
+		} else {
+			// This means we max out Green and scale blue
+			return new Color3f(new Color(PLANET_R, PLANET_G_RANGE,
+					(int) (PLANET_B_BASE - (idx * PLANET_B_RANGE)), A));
+		}
 	}
 
 	public Transform3D lookTowardsOriginFrom(Point3d point) {
@@ -177,29 +178,34 @@ public class Planetizer {
 		return move;
 	}
 
-	public void createAxis(TransformGroup tg) {
-
+	public void createAxis(TransformGroup tg, boolean smallAxes) {
+		float axisLength;
+		if (smallAxes) {
+			axisLength = 0.5f;
+		} else {
+			axisLength = 10f;
+		}
 		// Create X axis
 		LineArray axisXLines = new LineArray(2, LineArray.COORDINATES);
 		tg.addChild(new Shape3D(axisXLines));
 
-		axisXLines.setCoordinate(0, new Point3f(-10.0f, 0.0f, 0.0f));
-		axisXLines.setCoordinate(1, new Point3f(10.0f, 0.0f, 0.0f));
+		axisXLines.setCoordinate(0, new Point3f(-1 * axisLength, 0.0f, 0.0f));
+		axisXLines.setCoordinate(1, new Point3f(axisLength, 0.0f, 0.0f));
 
 		// Create Y axis
 		LineArray axisYLines = new LineArray(2, LineArray.COORDINATES);
 		tg.addChild(new Shape3D(axisYLines));
 
-		axisYLines.setCoordinate(0, new Point3f(0.0f, -10.0f, 0.0f));
-		axisYLines.setCoordinate(1, new Point3f(0.0f, 10.0f, 0.0f));
+		axisYLines.setCoordinate(0, new Point3f(0.0f, -1 * axisLength, 0.0f));
+		axisYLines.setCoordinate(1, new Point3f(0.0f, axisLength, 0.0f));
 
 		// Create Z axis with arrow
 
 		LineArray axisZLines = new LineArray(2, LineArray.COORDINATES);
 		tg.addChild(new Shape3D(axisZLines));
 
-		axisZLines.setCoordinate(0, new Point3f(0.0f, 0.0f, 10.0f));
-		axisZLines.setCoordinate(1, new Point3f(0.0f, 0.0f, -10.0f));
+		axisZLines.setCoordinate(0, new Point3f(0.0f, 0.0f, axisLength));
+		axisZLines.setCoordinate(1, new Point3f(0.0f, 0.0f, -1 * axisLength));
 
 	}
 
