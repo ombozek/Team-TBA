@@ -35,26 +35,28 @@ public class ETConst {
 	// Asteroid Constants
 	public static final float ASTEROID_MAX_SIZE = 0.8f;
 	public static final int ASTEROID_DISTANCE = 1;
-	public static final int AST_RANGE = 55;
-	public static final int AST_R = 240;
-	public static final int AST_G = 175;
-	public static final int AST_B = 110;
 
-	// Used for sliding color for suns
+	// Star Color Constants
 	public static final int STAR_R = 255;
 	public static final int STAR_B = 100;
 	public static final int STAR_G_RANGE = 255;
 	public static final int STAR_G_BASE = 0;
 	public static final int A = 255;
 
-	// Used for sliding color for stars
+	// Planet Color Constants
 	public static final int PLANET_R = 0;
 	public static final int PLANET_B_RANGE = 255;
 	public static final int PLANET_B_BASE = 255;
 	public static final int PLANET_G_RANGE = 255;
 	public static final int PLANET_G_BASE = 0;
+	
+	// Asteroid Color Constants
+	public static final int AST_R = 240;
+	public static final int AST_G = 175;
+	public static final int AST_B = 110;
+	public static final int AST_RANGE = 60;
 
-	// Used for axes
+	// Axis Color Constants
 	public static final float Z_VAL = 1f;
 	public static final Vector3f BASE_AXIS = new Vector3f(0, 0, 1);
 	public static final float SMALL_AXIS = 0.15f;

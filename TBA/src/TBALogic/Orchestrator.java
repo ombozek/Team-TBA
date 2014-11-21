@@ -17,7 +17,6 @@ public class Orchestrator {
 		// Generate a list of files to parse
 		StupidContainer classFileInformation = null;
 		try {
-
 			isOSWindows = System.getProperty("os.name").toLowerCase()
 					.contains("windows");
 
@@ -40,7 +39,9 @@ public class Orchestrator {
 
 		} catch (Exception e) {
 			JFrame frame = new JFrame();
-			JOptionPane.showMessageDialog(frame, "An unrecoverable error occured, GalacticTBA Mission Aborted");
+			JOptionPane
+					.showMessageDialog(frame,
+							"An unrecoverable error occured, GalacticTBA Mission Aborted");
 			frame.dispose();
 			e.printStackTrace();
 			System.exit(0);
@@ -79,7 +80,8 @@ public class Orchestrator {
 			}
 		} catch (Exception e) {
 			frame = new JFrame();
-			JOptionPane.showMessageDialog(frame, "There was an error deleting your repository");
+			JOptionPane.showMessageDialog(frame,
+					"There was an error deleting your repository");
 			frame.dispose();
 			e.printStackTrace();
 		}
