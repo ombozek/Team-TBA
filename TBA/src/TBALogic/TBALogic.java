@@ -200,7 +200,7 @@ public class TBALogic {
 
 			String githubURI = (String) JOptionPane.showInputDialog(frame,
 					"Galactic TBA:\n" + "Please enter Github URI",
-					"Customized Dialog", JOptionPane.PLAIN_MESSAGE, null, null,
+					"Galactic TBA", JOptionPane.PLAIN_MESSAGE, null, null,
 					null);
 
 			String dir = System.getProperty("user.dir");
