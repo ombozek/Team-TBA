@@ -71,6 +71,12 @@ public class Planet {
 		this.tg_parent = tg;
 		tg.addChild(this.tg_axis_rot);
 	}
+	public TransformGroup getTg_parent() {
+		return tg_parent;
+	}
+	public void setTg_parent(TransformGroup tg_parent) {
+		this.tg_parent = tg_parent;
+	}
 	protected void setColor(Color3f c) {
 		this.color=c;
 	}
