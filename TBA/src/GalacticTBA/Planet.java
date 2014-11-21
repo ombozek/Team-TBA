@@ -25,14 +25,13 @@ public class Planet {
 	Color3f color;
 	float radius;
 	//Positioning attributes
-	Vector3f pos;
 	Vector3f axis;
 	TransformGroup tg_axis_rot;
 	TransformGroup tg_trans;
 	TransformGroup tg_parent;
-
 	TransformGroup tg_rot;
 	float orbit_radius;
+	
 	public Planet(){
 		//Empty Constructor
 	}
@@ -83,23 +82,16 @@ public class Planet {
 	}
 	public void setColor(Color3f c) {
 		this.color=c;
+		this.mat = new Material(color, new Color3f(Color.black), color, color, 1.0f);
+		this.ap.setMaterial(mat );
+		this.sphere.setAppearance(ap);
 	}
 	public double getRadius() {
 		return radius;
 	}
 
-	public void setRadius(float radius) {
-		this.radius = radius;
-	}
-
 	public Color3f getColor() {
 		return color;
-	}
-	public Vector3f getPos() {
-		return pos;
-	}
-	public void setPos(Vector3f pos) {
-		this.pos = pos;
 	}
 	public Vector3f getAxis() {
 		return axis;

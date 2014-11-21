@@ -39,17 +39,11 @@ public class PlanetTest {
 		assertEquals(p2.getTg_parent(),p1.getTg_rot());
 	}
 	@Test
-	public void testSettersAndGetters(){
+	public void testColor(){
 		p1.setColor(new Color3f(Color.GREEN));
-		assertEquals(p1.getColor(),new Color3f(Color.GREEN));
-		p1.setAxis(new Vector3f(0,1,0));
-		assertEquals(p1.getAxis(),new Vector3f(0,1,0));
-		p1.setOrbit_radius(0);
-		assertEquals(p1.getOrbit_radius(),0);
-		p1.setRadius((float) 3.14);
-		assertEquals(p1.getRadius(),3.14);
-		
-		
+		Color3f color = null;
+		p1.getSphere().getAppearance().getColoringAttributes().getColor(color);
+		assertEquals(color,new Color3f(Color.GREEN));
 	}
 	@Test
 	public void testTranslate(){
@@ -60,7 +54,10 @@ public class PlanetTest {
 		p1.getSphere().getLocalToVworld(t3d);
 		Vector3f location = new Vector3f();
 		t3d.get(location);
-		assertEquals(location,new Vector3f(10,0,0));
+		
+		assertEquals(location.x,10);
+		assertEquals(location.y,0);
+		assertEquals(location.z,0);
 	}
 
 }
