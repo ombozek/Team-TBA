@@ -13,5 +13,7 @@ Requirements:
 How to Run:
 ============
 In Eclipse, Expand the TBA folder, then expand the TBALogic folder. Right click on Orchestrator.java and select Run As -> Java Application. Next follow the GUI Instructions that will pop up and experience the awesomeness that is GalacticTBA
+You will need either a local git repository or a URI for a github repository. 
+Please ensure that you select the entire repository folder if you don’t have a github URI, otherwise you will get an exception. (Select the folder that holds the .git folder)
 
 
