@@ -1,5 +1,6 @@
 package universeTests;
 
+import static GalacticTBA.ETConst.*;
 import static org.junit.Assert.*;
 
 import java.awt.Color;
@@ -12,32 +13,45 @@ import javax.vecmath.Vector3f;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.sun.j3d.utils.geometry.Sphere;
+
 import GalacticTBA.Planet;
 
 public class PlanetTest {
 	Planet p1;
+	Vector3f p1Axis = new Vector3f(0, 0, 1);
+	float p1Radius = 10f;
+	float p1Distance = 100f;
+	Color3f p1Color = new Color3f(Color.BLUE);
+
 	Planet p2;
+	Vector3f p2Axis = new Vector3f(1, 1, 1);
+	float p2Radius = 5f;
+	float p2Distance = 0f;
+	Color3f p2Color = new Color3f(Color.GREEN);
+
 	@Before
 	public void setUp() throws Exception {
-		
-		p1 = new Planet(new Vector3f(0,0,1),(float) 10,100,new Color3f(Color.BLUE));
-		p2 = new Planet(new Vector3f(1,1,1),(float) 5,0,new Color3f(Color.GREEN),p1.getTg_trans());
-		
+
+		p1 = new Planet(p1Axis, p1Radius, p1Distance, p1Color);
+		p2 = new Planet(p2Axis, p2Radius, p2Distance, p2Color, p1.getTg_trans());
+
 	}
 
-	@SuppressWarnings("deprecation")
 	@Test
 	public void test() {
-		assertEquals(p1.getColor() , new Color3f(Color.BLUE));
-		assertEquals(p2.getColor(),new Color3f(Color.GREEN));
-		assertEquals(p1.getOrbit_radius(),100.0);
-		assertEquals(p2.getOrbit_radius(),0.0);
-		assertEquals(p1.getRadius(),10);
-		assertEquals(p2.getRadius(),5);
-		assertEquals(p1.getAxis(), new Vector3f(0,0,1));
-		assertEquals(p2.getAxis(), new Vector3f(1,1,1));
-		assertEquals(p2.getTg_parent(),p1.getTg_rot());
+		assertEquals(p1Color, p1.getColor());
+		assertEquals(p2Color, p2.getColor());
+		assertEquals(p1Distance / PLANET_RADIUS_DIVISOR, p1.getOrbit_radius(),
+				0.0);
+		assertEquals(0.0 / PLANET_RADIUS_DIVISOR, p2.getOrbit_radius(), 0.0);
+		assertEquals(10 / PLANET_SIZE_DIVISOR, p1.getRadius(), 0.0);
+		assertEquals(5 / PLANET_SIZE_DIVISOR, p2.getRadius(), 0.0);
+		assertEquals(p1Axis, p1.getAxis());
+		assertEquals(p2Axis, p2.getAxis());
+		assertEquals(p1.getTg_trans(), p2.getTg_parent());
 	}
+
 	@Test
 	public void testColor(){
 		p1.setColor(new Color3f(Color.GREEN));
@@ -45,19 +59,18 @@ public class PlanetTest {
 		p1.getSphere().getAppearance().getColoringAttributes().getColor(color);
 		assertEquals(color,new Color3f(Color.GREEN));
 	}
-	@Test
-	public void testTranslate(){
+	public void testTranslate() {
+		Sphere s = new Sphere(1);
 		TransformGroup tg = new TransformGroup();
-		tg = p1.translate(p1.getSphere(),new Vector3f(10,0,0));
-		assertEquals(tg,p1.getSphere().getParent());
+		tg = p1.translate(s, new Vector3f(10, 0, 0));
 		Transform3D t3d = new Transform3D();
-		p1.getSphere().getLocalToVworld(t3d);
+		s.getLocalToVworld(t3d);
 		Vector3f location = new Vector3f();
 		t3d.get(location);
-		
 		assertEquals(location.x,10);
 		assertEquals(location.y,0);
 		assertEquals(location.z,0);
+
 	}
 
 }
