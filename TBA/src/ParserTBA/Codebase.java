@@ -51,6 +51,7 @@ public class Codebase {
 				commitCount = new Integer(1);
 			clazz.setNumCommits(commitCount);
 			setMinMax(commitCount, 6, 7);
+			clazz.determineScales();
 		}
 		importRange = new Range(rangeHolder[0], rangeHolder[1]);
 		slocRange = new Range(rangeHolder[2], rangeHolder[3]);
@@ -127,11 +128,11 @@ public class Codebase {
 		private String className;
 		private int sloc = 0;
 		private int numCommits;
-
-		VarTable varTable = new VarTable();
+		public final VarTable varTable;
 
 		public Clazz(String className) {
 			this.className = className;
+			varTable = new VarTable();
 		}
 
 		public String getClassName() {
@@ -173,6 +174,10 @@ public class Codebase {
 
 		public void setNumCommits(int numCommits) {
 			this.numCommits = numCommits;
+		}
+
+		public void determineScales() {
+			this.varTable.determineScales();
 		}
 
 		@Override
@@ -230,7 +235,8 @@ public class Codebase {
 
 	public static class VarTable {
 
-		int[] varTable;
+		private int[] varTable;
+		private Range varRange;
 
 		public VarTable() {
 			varTable = new int[types.values().length];
@@ -246,6 +252,21 @@ public class Codebase {
 
 		public int[] getTable() {
 			return varTable;
+		}
+
+		public Range getVarRange() {
+			return varRange;
+		}
+
+		public void determineScales() {
+			int min = varTable[0], max = varTable[0];
+			for (int i : varTable) {
+				if (min > i)
+					min = i;
+				if (max < i)
+					max = i;
+			}
+			varRange = new Range(min, max);
 		}
 
 		@Override

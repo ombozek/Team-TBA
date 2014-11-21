@@ -7,7 +7,6 @@ import java.util.Random;
 
 import javax.media.j3d.BoundingSphere;
 import javax.media.j3d.BranchGroup;
-import javax.media.j3d.DirectionalLight;
 import javax.media.j3d.LineArray;
 import javax.media.j3d.Shape3D;
 import javax.media.j3d.Transform3D;
@@ -24,6 +23,7 @@ import GalacticTBA.ETConst.Range;
 import ParserTBA.Codebase;
 import ParserTBA.Codebase.Clazz;
 import ParserTBA.Codebase.Methodz;
+import ParserTBA.Codebase.VarTable;
 
 import com.sun.j3d.utils.behaviors.mouse.MouseZoom;
 import com.sun.j3d.utils.behaviors.vp.OrbitBehavior;
@@ -33,7 +33,7 @@ public class Planetizer {
 	public final Codebase codebase;
 	public final Range importRange, paramRange, slocRange, commitRange;
 	public final int showAxes;
-	
+
 	public Planetizer(Codebase codebase) {
 		this.codebase = codebase;
 		importRange = codebase.getImportRange();
@@ -42,13 +42,14 @@ public class Planetizer {
 		commitRange = codebase.getCommitRange();
 
 		Object[] options = { "Yes, show stellar axes",
-				"No, don't show stellar axes", "Only show central axis" };
+				"No, don't show stellar axes", "Only stellar axes",
+				"Only show central axis" };
 
 		JFrame frame = new JFrame();
 		showAxes = JOptionPane.showOptionDialog(frame,
-				"Would you like to see axes on stars?", "GalacticTBA",
-				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-				options, options[0]);
+				"Would you like to see a central axis and axes on stars?",
+				"GalacticTBA", JOptionPane.YES_NO_OPTION,
+				JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
 
 	}
 
@@ -64,38 +65,33 @@ public class Planetizer {
 		TransformGroup viewgroup = new TransformGroup();
 		maingroup.addChild(viewgroup);
 
-		Planet blackhole = new Planet(new Vector3f(0, 0, 1), (float) 0, 0,
-				new Color3f(Color.YELLOW), viewgroup);
-		if (showAxes == 0 || showAxes == 2)
-			createAxis(blackhole.tg_trans, false);
+		Planet blackhole = new Planet(BASE_AXIS, (float) 0, 0, new Color3f(
+				Color.YELLOW), viewgroup);
+		new Sun(BASE_AXIS, DG_HOLE_SIZE, BLACK_HOLE_DISTANCE, new Color3f(
+				new Color(DG_HOLE, DG_HOLE, DG_HOLE, 100)), blackhole.tg_trans);
+		new Sun(BASE_AXIS, LG_HOLE_SIZE, BLACK_HOLE_DISTANCE, new Color3f(
+				new Color(LG_HOLE, LG_HOLE, LG_HOLE, 100)), blackhole.tg_trans);
+		if (showAxes == 0 || showAxes == 3)
+			createViewableAxis(blackhole.tg_trans, false);
 
 		Planet p;
-		int w = INITIAL_STAR_DISTANCE;
+		float starRadius;
 		for (Clazz clazz : codebase.getClasses().values()) {
-			w += STAR_SPACING;
-			
-			p = new Sun(new Vector3f(0, 0, 1), starRadius(clazz.getSloc()),clazz.getSloc()*2 + w ,
-					starColor(clazz.getNumCommits()), blackhole.tg_trans);
 
-			if (showAxes == 0)
-				createAxis(p.tg_trans, true);
+			starRadius = starRadius(clazz.getSloc());
+			p = new Sun(generateAxis(0), starRadius, starDistance(
+					clazz.getSloc(), true), starColor(clazz.getNumCommits()),
+					blackhole.tg_trans);
 
-			planetize(clazz, p.tg_trans);
-			if (clazz.getSubclasses() != null && !clazz.getSubclasses().isEmpty())
-				celestialize(clazz, p);
+			if (showAxes == 0 || showAxes == 2)
+				createViewableAxis(p.tg_trans, true);
+
+			asteroidize(clazz.varTable, p.tg_trans, starRadius);
+			planetize(clazz, p.tg_trans, starRadius);
+			if (clazz.getSubclasses() != null
+					&& !clazz.getSubclasses().isEmpty())
+				celestialize(clazz, p, 1);
 		}
-
-		/*Color3f light1Color = new Color3f(1.8f, 0.1f, 0.1f);
-		BoundingSphere bounds = new BoundingSphere(new Point3d(0.0, 0.0, 0.0),
-				500.0);
-		Vector3f light1Direction = new Vector3f(4.0f, -7.0f, 12.0f);
-		DirectionalLight light1 = new DirectionalLight(light1Color,
-				light1Direction);
-		Vector3f light2Direction = new Vector3f(4.0f, 7.0f, 12.0f);
-		DirectionalLight light2 = new DirectionalLight(light1Color,
-				light2Direction);
-		light2.setBoundsAutoCompute(true);
-		light1.setInfluencingBounds(bounds);*/
 
 		OrbitBehavior orbit = new OrbitBehavior(universe.getCanvas(),
 				OrbitBehavior.REVERSE_ALL);
@@ -107,7 +103,6 @@ public class Planetizer {
 
 		universe.getViewingPlatform().setViewPlatformBehavior(orbit);
 		universe.addBranchGraph(maingroup);
-
 	}
 
 	/**
@@ -118,22 +113,25 @@ public class Planetizer {
 	 *            the superclass of this subclass
 	 * @param p
 	 *            the superstar which this substar will orbit
+	 * @param depth
+	 *            the depth in subclasses with respect to the hierarchy
 	 */
-	private void celestialize(Clazz superclazz, Planet p) {
-		int w = INITIAL_STAR_DISTANCE;
-		Random rg = new Random();
+	private void celestialize(Clazz superclazz, Planet p, int depth) {
+		float starRadius;
 		for (Clazz subclazz : superclazz.getSubclasses()) {
-			w += STAR_SPACING;
-			p = new Sun(new Vector3f(rg.nextFloat(),rg.nextFloat(), (float) 1), starRadius(subclazz.getSloc()),
-					subclazz.getSloc()+w, starColor(subclazz.getNumCommits()), p.tg_trans);
+			starRadius = starRadius(subclazz.getSloc());
+			p = new Sun(generateAxis(depth), starRadius, starDistance(
+					subclazz.getSloc(), false),
+					starColor(subclazz.getNumCommits()), p.tg_trans);
 
-			if (showAxes == 0)
-				createAxis(p.tg_trans, true);
+			if (showAxes == 0 || showAxes == 2)
+				createViewableAxis(p.tg_trans, true);
 
-			planetize(subclazz, p.tg_trans);
+			asteroidize(subclazz.varTable, p.tg_trans, starRadius);
+			planetize(subclazz, p.tg_trans, starRadius);
 			if (subclazz.getSubclasses() != null
 					&& !subclazz.getSubclasses().isEmpty())
-				celestialize(subclazz, p);
+				celestialize(subclazz, p, depth + 1);
 		}
 	}
 
@@ -145,16 +143,46 @@ public class Planetizer {
 	 *            planets
 	 * @param trans
 	 *            the TransformationGroup of the owning star
+	 * @param starRadius
+	 *            the radius of the owning star
 	 */
-	public void planetize(Clazz clazz, TransformGroup trans) {
-		int w = INITIAL_PLANET_DISTANCE;
+	public void planetize(Clazz clazz, TransformGroup trans, float starRadius) {
+		int w = INITIAL_PLANET_DISTANCE + (int) starRadius;
 		Random rg = new Random();
+		float planetRadius;
 		for (Methodz method : clazz.getMethods()) {
+			planetRadius = planetRadius(method.sloc);
+			new Planet(new Vector3f(rg.nextFloat(), rg.nextFloat(),
+					rg.nextFloat()), planetRadius(method.sloc), planetRadius
+					+ w, planetColor(method.parameters), trans);
 			w += PLANET_SPACING;
-			
-			new Planet(new Vector3f(rg.nextFloat(),rg.nextFloat(), rg.nextFloat()), planetRadius(method.sloc), method.sloc/2 +w,
-					planetColor(method.parameters), trans);
 		}
+	}
+
+	/**
+	 * Creates asteroids which represent global variables
+	 * 
+	 * @param vars
+	 *            the collection of counted variables from the class
+	 * @param trans
+	 *            the TransformGroup of the owning star
+	 * @param sunRadius
+	 *            the radius of the owning star
+	 */
+	public void asteroidize(VarTable vars, TransformGroup trans, float sunRadius) {
+		Random rg = new Random();
+		Range varRange = vars.getVarRange();
+		float asteroidRadius;
+		for (int varCount : vars.getTable()) {
+			if (varCount > 0) {
+				asteroidRadius = asteroidRadius(varRange, varCount);
+				new Planet(new Vector3f(rg.nextFloat(), rg.nextFloat(),
+						rg.nextFloat()), asteroidRadius, asteroidRadius
+						+ sunRadius + ASTEROID_DISTANCE, asteroidColor(
+						varRange, varCount), trans);
+			}
+		}
+
 	}
 
 	/**
@@ -166,9 +194,10 @@ public class Planetizer {
 	 * @return the size of the radius of the star
 	 */
 	public float starRadius(int sloc) {
-		return STAR_SCALAR
+		float starRadius = STAR_SCALAR
 				* ((float) (sloc - slocRange.MIN) / (float) slocRange
 						.getRange());
+		return (starRadius > MIN_STAR_SIZE ? starRadius : MIN_STAR_SIZE);
 	}
 
 	/**
@@ -185,6 +214,49 @@ public class Planetizer {
 				/ (double) (commitRange.getRange() + 1);
 		return new Color3f(new Color(STAR_R,
 				(int) ((STAR_G_RANGE * idx) + STAR_G_BASE), STAR_B, A));
+	}
+
+	/**
+	 * Calculates the distance a star will exist from the black hole or
+	 * superstar - relative to it's number of source lines of code
+	 * 
+	 * @param sloc
+	 *            the number of source lines of code
+	 * @param baseLevel
+	 *            true if this is not a subclass, false otherwise
+	 * @return the distance of a star to the blackhole/superstar
+	 */
+	public int starDistance(int sloc, boolean baseLevel) {
+		int spacing = (baseLevel ? MAX_STAR_SPACING : MAX_SUBSTAR_SPACING);
+		int minDist = (baseLevel ? MIN_STAR_SPACING : MIN_SUBSTAR_SPACING);
+		double idx = ((double) (sloc - slocRange.MIN) / slocRange.getRange());
+		int dist = (int) ((idx * spacing) * ((double) (VARIANCE + 1 - new Random()
+				.nextInt(3)) / VARIANCE));
+		return (dist > minDist ? dist : minDist);
+	}
+
+	/**
+	 * Generates an axis with a random wobble to make it look a bit prettier -
+	 * and a bit more realistic
+	 * 
+	 * @param depth
+	 *            the depth in subclasses with respect to the hierarchy
+	 * @return the vector3f that represents the orbital plane of the celestial
+	 *         body
+	 */
+	public Vector3f generateAxis(int depth) {
+		float xVal, yVal;
+		Random rg = new Random();
+		if (depth == 0) {
+			xVal = (float) (0.1 - (0.1 * rg.nextInt(3)));
+			yVal = (float) (0.2 - (0.1 * rg.nextInt(5)));
+		} else {
+			xVal = (float) ((depth % 2) + 0.1 - (0.1 * rg.nextInt(3)));
+			yVal = (float) (((depth + 1) % 2) + 0.1 - (0.1 * rg.nextInt(3)));
+		}
+
+		return new Vector3f(xVal, yVal, Z_VAL);
+
 	}
 
 	/**
@@ -225,6 +297,44 @@ public class Planetizer {
 		}
 	}
 
+	/**
+	 * Calculates the size of an asteroid, based on the number of variables of
+	 * the type it represents
+	 * 
+	 * @param varRange
+	 *            The numeric range of instances of variables in the class
+	 * @param varCount
+	 *            the number of the specific type we're representing as an
+	 *            asteroid
+	 * @return the radius of the asteroid
+	 */
+	public float asteroidRadius(Range varRange, int varCount) {
+		float idx = (varCount - varRange.MIN)
+				/ (float) (varRange.getRange() + 1);
+		return idx * ASTEROID_MAX_SIZE;
+	}
+
+	/**
+	 * Generates a color for the asteroid based on the number of the instances
+	 * of a type relative to it's own class from Dark Brown - having fewer
+	 * instances - to Light Brown - having more instances
+	 * 
+	 * @param varRange
+	 *            The numeric range of instances of variables in the class
+	 * @param varCount
+	 *            the number of the specific type we're representing as an
+	 *            asteroid
+	 * @return the generated color (from dark to light brown)
+	 */
+	public Color3f asteroidColor(Range varRange, int varCount) {
+		double idx = (varCount - varRange.MIN)
+				/ (double) (varRange.getRange() + 1);
+		int diff = (int) (AST_RANGE * idx);
+		return new Color3f(new Color(AST_R - diff, AST_G - diff, AST_B - diff,
+				A));
+
+	}
+
 	public Transform3D lookTowardsOriginFrom(Point3d point) {
 		Transform3D move = new Transform3D();
 
@@ -234,12 +344,20 @@ public class Planetizer {
 		return move;
 	}
 
-	public void createAxis(TransformGroup tg, boolean smallAxes) {
+	/**
+	 * Generates a viewable axis for any planetary body
+	 * 
+	 * @param tg
+	 *            the TransformationGroup of the body on which we want an axis
+	 * @param smallAxes
+	 *            true if axis for celestial body, false if axis for black hole
+	 */
+	public void createViewableAxis(TransformGroup tg, boolean smallAxes) {
 		float axisLength;
 		if (smallAxes) {
-			axisLength = 0.5f;
+			axisLength = SMALL_AXIS;
 		} else {
-			axisLength = 10f;
+			axisLength = BIG_AXIS;
 		}
 		// Create X axis
 		LineArray axisXLines = new LineArray(2, LineArray.COORDINATES);

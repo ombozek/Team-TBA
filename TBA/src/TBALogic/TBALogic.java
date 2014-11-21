@@ -178,7 +178,13 @@ public class TBALogic {
 		}
 	}
 
-	// TODO make this work
+	/**
+	 * Handles all of the UI panes and selection of a repository either via
+	 * github or a local git repository
+	 * 
+	 * @return the root of a git repository
+	 * @throws Exception
+	 */
 	private String getCodeRepo() throws Exception {
 		Object[] options = { "Local Git Repository", "Github URI" };
 
