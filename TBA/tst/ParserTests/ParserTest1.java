@@ -1,15 +1,16 @@
 package ParserTests;
 
 import static org.junit.Assert.assertEquals;
-
+import static org.junit.Assert.fail;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Hashtable;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-
 import ParserTBA.Codebase;
 import ParserTBA.Codebase.Clazz;
 import ParserTBA.Codebase.Methodz;
@@ -42,13 +43,23 @@ public class ParserTest1 {
 		subclasses = new ArrayList<Clazz>();
 	}
 
-	@Test
+	/*@Test
 	public void testParse() {
-
-		// ArrayList<Clazz> testClasses = parser.parse();
-		// TODO: TEST
-
-	}
+		Clazz testClass = new Clazz("This");
+		try {
+			File file = new File("src/tst/ParserTest1.java");
+			parser.setCurrentClassForTestOnly(testClass);
+			parser.parseClass(file);
+			assertEquals(testClass.numImports,17);
+			assertEquals(testClass.getMethods().size(),14);
+			assertEquals(testClass.getClassName(),"ParserTest1");
+			assertEquals(testClass.getClass(), this);
+		} catch (Exception e) {
+			fail();
+			System.out.println("fail");
+			e.printStackTrace();
+		}		
+	}*/
 
 	@Test
 	public void testParseClass() {
