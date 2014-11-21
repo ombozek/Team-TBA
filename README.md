@@ -4,7 +4,7 @@ Team-TBA
 Requirements: 
 ============
 - This project should be run through eclipse (or an alternative IDE)
-	- Clone Repo -> Open Eclipse -> File -> Import -> General ->  Existing Projects into Workspace -> Seletct Team-TBA Folder -> Select TBA in "Projects:" pane
+	- Clone Repo -> Open Eclipse -> File -> Import -> General ->  Existing Projects into Workspace -> Select Team-TBA Folder -> Select TBA in "Projects:" pane
 
 - This project must be run on a Windows machine
 	- This project should be able to reference the Java3D library immediately through the inherent java buildpath
@@ -12,6 +12,6 @@ Requirements:
 
 How to Run:
 ============
-In Eclipse, Expand the TBA folder, then expand the TBALogic folder. Right click on Orchestrator.java and select Run As -> Java Application. Next follow the GUI Instructions that will pop up and expereince the awesomeness that is GalacticTBA
+In Eclipse, Expand the TBA folder, then expand the TBALogic folder. Right click on Orchestrator.java and select Run As -> Java Application. Next follow the GUI Instructions that will pop up and experience the awesomeness that is GalacticTBA
 
 
