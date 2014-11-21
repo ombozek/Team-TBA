@@ -29,6 +29,8 @@ public class Planet {
 	Vector3f axis;
 	TransformGroup tg_axis_rot;
 	TransformGroup tg_trans;
+	TransformGroup tg_parent;
+
 	TransformGroup tg_rot;
 	float orbit_radius;
 	public Planet(){
@@ -66,6 +68,7 @@ public class Planet {
 	//Constructor to add to a parent transformgroup
 	public Planet(Vector3f axis, float radius,float orbit_radius, Color3f color, TransformGroup tg){
 		this(axis,radius,orbit_radius,color);
+		this.tg_parent = tg;
 		tg.addChild(this.tg_axis_rot);
 	}
 	protected void setColor(Color3f c) {
@@ -81,6 +84,36 @@ public class Planet {
 
 	public Color3f getColor() {
 		return color;
+	}
+	public Vector3f getPos() {
+		return pos;
+	}
+	public void setPos(Vector3f pos) {
+		this.pos = pos;
+	}
+	public Vector3f getAxis() {
+		return axis;
+	}
+	public void setAxis(Vector3f axis) {
+		this.axis = axis;
+	}
+	public TransformGroup getTg_trans() {
+		return tg_trans;
+	}
+	public void setTg_trans(TransformGroup tg_trans) {
+		this.tg_trans = tg_trans;
+	}
+	public TransformGroup getTg_rot() {
+		return tg_rot;
+	}
+	public void setTg_rot(TransformGroup tg_rot) {
+		this.tg_rot = tg_rot;
+	}
+	public float getOrbit_radius() {
+		return orbit_radius;
+	}
+	public void setOrbit_radius(float orbit_radius) {
+		this.orbit_radius = orbit_radius;
 	}
 	TransformGroup rotate(Node node,Alpha alpha){
 
