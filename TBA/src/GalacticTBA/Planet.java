@@ -60,6 +60,7 @@ public class Planet {
 			this.ap.setMaterial(mat );
 			this.sphere.setAppearance(ap);
 	}
+	
 	//Constructor to add to main branchgroup
 	public Planet(Vector3f axis, float radius, float orbit_radius, Color3f color,BranchGroup g){
 		this(axis,radius,orbit_radius,color);
@@ -71,13 +72,16 @@ public class Planet {
 		this.tg_parent = tg;
 		tg.addChild(this.tg_axis_rot);
 	}
+	public Sphere getSphere() {
+		return sphere;
+	}
 	public TransformGroup getTg_parent() {
 		return tg_parent;
 	}
 	public void setTg_parent(TransformGroup tg_parent) {
 		this.tg_parent = tg_parent;
 	}
-	protected void setColor(Color3f c) {
+	public void setColor(Color3f c) {
 		this.color=c;
 	}
 	public double getRadius() {
@@ -121,7 +125,7 @@ public class Planet {
 	public void setOrbit_radius(float orbit_radius) {
 		this.orbit_radius = orbit_radius;
 	}
-	TransformGroup rotate(Node node,Alpha alpha){
+	public TransformGroup rotate(Node node,Alpha alpha){
 
 	      TransformGroup xformGroup = new TransformGroup();
 	      xformGroup.setCapability(
@@ -143,7 +147,7 @@ public class Planet {
 	      return xformGroup;
 
 	    }//end rotate
-	TransformGroup rotate(Node node,Vector3f vector){
+	public TransformGroup rotate(Node node,Vector3f vector){
 
 	      TransformGroup xformGroup = new TransformGroup();
 	      xformGroup.setCapability(
@@ -171,7 +175,7 @@ public class Planet {
 	    //Given an incoming node object and a vector object,
 	    // this method will return a transform group designed
 	    // to translate that node according to that vector.
-	    TransformGroup translate(Node node,Vector3f vector){
+	  public TransformGroup translate(Node node,Vector3f vector){
 
 	        Transform3D transform3D = new Transform3D();
 	        transform3D.setTranslation(vector);
