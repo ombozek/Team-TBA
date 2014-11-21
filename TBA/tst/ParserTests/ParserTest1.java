@@ -45,7 +45,6 @@ public class ParserTest1 {
 	@Test
 	public void testParse() {
 
-		// ArrayList<Clazz> testClasses = parser.parse();
 		// TODO: TEST
 
 	}
@@ -57,22 +56,6 @@ public class ParserTest1 {
 
 	}
 	
-	@Test
-	public void testparseClassDeclaration() {
-		
-		parser.setCurrentClassForTestOnly(clazz);
-		parser.getCurrentClassForTestOnly();
-		parser.setBufferedReaderForTestOnly(mockReader);
-		parser.getBufferedReaderForTestOnly();
-
-		Clazz superClazz = new Clazz(classNames[0]);
-		superClazz.addSubclass(clazz);
-		clazz = parser.getCurrentClassForTestOnly();
-		
-		assertEquals("OtherClass", clazz.superclassName);
-		
-	}
-
 	@Test
 	public void testParseMethodBodyEmpty() throws Exception {
 
@@ -144,10 +127,17 @@ public class ParserTest1 {
 	}
 
 	@Test
-	public void testCountDeclaredVariables() {
+	public void testCountDeclaredVariables() throws Exception {
 
-		// TODO: TEST
-
+		String[] currLine = { "public", "int", "x", "=", "1", ",", "y", "=", "2", ",", "z", "=", "3", ";" };
+		
+		parser.setCurrentClassForTestOnly(clazz);
+		parser.getCurrentClassForTestOnly();
+		parser.setBufferedReaderForTestOnly(mockReader);
+		parser.getBufferedReaderForTestOnly();
+		int num = parser.countDeclaredVariables(currLine, 4);
+		assertEquals(3, num);
+		
 	}
 
 	@Test
