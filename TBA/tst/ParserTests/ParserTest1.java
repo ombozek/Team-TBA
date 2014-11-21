@@ -1,16 +1,15 @@
 package ParserTests;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Hashtable;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+
 import ParserTBA.Codebase;
 import ParserTBA.Codebase.Clazz;
 import ParserTBA.Codebase.Methodz;
@@ -46,29 +45,25 @@ public class ParserTest1 {
 	@Test
 	public void testParse() {
 
-		/*Clazz testClass = new Clazz("This");
-		try {
-			File file = new File("src/tst/ParserTest1.java");
-			parser.setCurrentClassForTestOnly(testClass);
-			parser.parseClass(file);
-			assertEquals(testClass.numImports,17);
-			assertEquals(testClass.getMethods().size(),14);
-			assertEquals(testClass.getClassName(),"ParserTest1");
-			assertEquals(testClass.getClass(), this);
-		} catch (Exception e) {
-			fail();
-			System.out.println("fail");
-			e.printStackTrace();
-		}		*/
+		/*
+		 * Clazz testClass = new Clazz("This"); try { File file = new
+		 * File("src/tst/ParserTest1.java");
+		 * parser.setCurrentClassForTestOnly(testClass);
+		 * parser.parseClass(file); assertEquals(testClass.numImports,17);
+		 * assertEquals(testClass.getMethods().size(),14);
+		 * assertEquals(testClass.getClassName(),"ParserTest1");
+		 * assertEquals(testClass.getClass(), this); } catch (Exception e) {
+		 * fail(); System.out.println("fail"); e.printStackTrace(); }
+		 */
 	}
 
 	@Test
 	public void testParseClass() {
-		
+
 		// TODO: TEST
 
 	}
-	
+
 	@Test
 	public void testParseMethodBodyEmpty() throws Exception {
 
@@ -104,7 +99,7 @@ public class ParserTest1 {
 	public void testMethodOrVarMethod() throws Exception {
 
 		String[] currLine = { "pubic", "void", "method()" };
-		
+
 		parser.setCurrentClassForTestOnly(clazz);
 		parser.setBufferedReaderForTestOnly(mockReader);
 		parser.methodOrVar(currLine, 2, vTable);
@@ -112,24 +107,26 @@ public class ParserTest1 {
 		assertEquals("method", method.methodName);
 
 	}
-	
+
 	@Test
 	public void testMethodOrVarVar() throws Exception {
-		
-		String[] currLine = { "public", "int", "hello", "=", "1", ",", "static", "int", "a", ";" };
-		
+
+		String[] currLine = { "public", "int", "hello", "=", "1", ",",
+				"static", "int", "a", ";" };
+
 		parser.setCurrentClassForTestOnly(clazz);
 		parser.setBufferedReaderForTestOnly(mockReader);
 		parser.methodOrVar(currLine, 0, vTable);
 		assertEquals(2, vTable.getTable()[types.INT.ordinal()]);
-		
+
 	}
 
 	@Test
 	public void testParseMethodSignature() throws Exception {
 
-		String[] currLine = { "public", "void", "method(","int", "i","boolean", "j)" };
-		
+		String[] currLine = { "public", "void", "method(", "int", "i",
+				"boolean", "j)" };
+
 		parser.setCurrentClassForTestOnly(clazz);
 		parser.getCurrentClassForTestOnly();
 		parser.setBufferedReaderForTestOnly(mockReader);
@@ -142,15 +139,16 @@ public class ParserTest1 {
 	@Test
 	public void testCountDeclaredVariables() throws Exception {
 
-		String[] currLine = { "public", "int", "x", "=", "1", ",", "y", "=", "2", ",", "z", "=", "3", ";" };
-		
+		String[] currLine = { "public", "int", "x", "=", "1", ",", "y", "=",
+				"2", ",", "z", "=", "3", ";" };
+
 		parser.setCurrentClassForTestOnly(clazz);
 		parser.getCurrentClassForTestOnly();
 		parser.setBufferedReaderForTestOnly(mockReader);
 		parser.getBufferedReaderForTestOnly();
 		int num = parser.countDeclaredVariables(currLine, 4);
 		assertEquals(3, num);
-		
+
 	}
 
 	@Test

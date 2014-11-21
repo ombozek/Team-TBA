@@ -1,7 +1,8 @@
 package universeTests;
 
-import static GalacticTBA.ETConst.*;
-import static org.junit.Assert.*;
+import static GalacticTBA.ETConst.PLANET_RADIUS_DIVISOR;
+import static GalacticTBA.ETConst.PLANET_SIZE_DIVISOR;
+import static org.junit.Assert.assertEquals;
 
 import java.awt.Color;
 
@@ -13,9 +14,9 @@ import javax.vecmath.Vector3f;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sun.j3d.utils.geometry.Sphere;
-
 import GalacticTBA.Planet;
+
+import com.sun.j3d.utils.geometry.Sphere;
 
 public class PlanetTest {
 	Planet p1;
@@ -53,12 +54,14 @@ public class PlanetTest {
 	}
 
 	@Test
-	public void testColor(){
-		p1.setColor(new Color3f(Color.GREEN));
+	public void testColor() {
+		p1.setColor(p2Color);
 		Color3f color = null;
 		p1.getSphere().getAppearance().getColoringAttributes().getColor(color);
-		assertEquals(color,new Color3f(Color.GREEN));
+		assertEquals(p2Color, color);
 	}
+
+	@Test
 	public void testTranslate() {
 		Sphere s = new Sphere(1);
 		TransformGroup tg = new TransformGroup();
@@ -67,9 +70,9 @@ public class PlanetTest {
 		s.getLocalToVworld(t3d);
 		Vector3f location = new Vector3f();
 		t3d.get(location);
-		assertEquals(location.x,10);
-		assertEquals(location.y,0);
-		assertEquals(location.z,0);
+		assertEquals(10, location.x, 0);
+		assertEquals(0, location.y, 0);
+		assertEquals(0, location.z, 0);
 
 	}
 
