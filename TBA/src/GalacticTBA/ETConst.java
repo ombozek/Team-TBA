@@ -9,6 +9,11 @@ public class ETConst {
 	// Planet size is determined by the number of lines of code
 	// Planet color is determined by the relative number of parameters
 
+	// Planet.java Constants
+	public static final float PLANET_SIZE_DIVISOR = 100f;
+	public static final float PLANET_RADIUS_DIVISOR = 50f;
+	public static final double ORBIT_SPEED_MODIFIER = 250; // Default 500
+
 	// Blackhole constants
 	public static final float DG_HOLE_SIZE = 7.1f;
 	public static final float LG_HOLE_SIZE = 7f;
@@ -49,7 +54,7 @@ public class ETConst {
 	public static final int PLANET_B_BASE = 255;
 	public static final int PLANET_G_RANGE = 255;
 	public static final int PLANET_G_BASE = 0;
-	
+
 	// Asteroid Color Constants
 	public static final int AST_R = 240;
 	public static final int AST_G = 175;
