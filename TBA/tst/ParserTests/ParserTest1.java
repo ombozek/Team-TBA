@@ -43,28 +43,6 @@ public class ParserTest1 {
 	}
 
 	@Test
-	public void testParse() {
-
-		/*
-		 * Clazz testClass = new Clazz("This"); try { File file = new
-		 * File("src/tst/ParserTest1.java");
-		 * parser.setCurrentClassForTestOnly(testClass);
-		 * parser.parseClass(file); assertEquals(testClass.numImports,17);
-		 * assertEquals(testClass.getMethods().size(),14);
-		 * assertEquals(testClass.getClassName(),"ParserTest1");
-		 * assertEquals(testClass.getClass(), this); } catch (Exception e) {
-		 * fail(); System.out.println("fail"); e.printStackTrace(); }
-		 */
-	}
-
-	@Test
-	public void testParseClass() {
-
-		// TODO: TEST
-
-	}
-
-	@Test
 	public void testParseMethodBodyEmpty() throws Exception {
 
 		String[] currLine = { "public", "void", "testMethod(){}" };
